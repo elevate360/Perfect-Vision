@@ -1,0 +1,47 @@
+/*
+ * Specials content type styling
+ */
+
+.catalogue-listing{
+  
+  .catalogue{
+    border-bottom: dashed 2px $color__light_gray;
+    
+    &:last-of-type{
+      border-bottom: 0px; 
+    }
+  }
+  
+  
+  .image{
+    
+    img{ 
+      width: 100%;
+    }
+  }
+  
+  //download button
+  .download{
+
+    a{
+      background-color: $color__off_white;
+      color: inherit;
+      vertical-align: middle;
+    }
+    
+    .icon{
+      display: inline-block;
+      background-image: url(img/icon-pdf.png);
+      width: 30px;
+      height: 30px;
+      background-size: contain;
+      vertical-align: middle;
+      margin-right: 10px;
+      
+    }
+    .text{
+      display: inline-block;
+      vertical-align: middle;
+    }
+  }
+}

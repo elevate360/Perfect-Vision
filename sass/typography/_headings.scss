@@ -1,0 +1,94 @@
+/**
+ * Typography
+ * Adjustments to headers based on profiles (larger on large profiles)
+ */
+
+h1, h2, h3, h4, h5, h6 {
+	clear: both;
+	font-weight: 600;
+	letter-spacing: 0.12em;
+	color: $color__blue_normal;
+	text-transform: uppercase;
+	line-height: 1.25em;
+	margin: 0px auto 1em 0px;
+	
+	a{
+	  color: inherit;
+	}
+	
+	&.light{
+	  font-weight: 500;
+	}
+	
+	&.bold{
+	  font-weight: 700;
+	}
+	
+	&.capitalize{
+	  text-transform: capitalize;
+	}
+	
+	&.black,
+	&.black a{
+	  color: $color__black;
+	}
+	
+}
+
+h1, .h1, .hero-title{
+  font-size: 2.77rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  
+  @include breakpoint("large"){
+    font-size: 3.70rem;
+    
+  }
+}
+h2, .h2{
+  font-size: 1.87rem; 
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  
+  @include breakpoint("large"){
+    font-size: 2.5rem;
+  }
+}
+h3, .h3{
+  font-size: 1.26rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  
+  @include breakpoint("large"){
+    font-size: 1.68rem;
+    
+  }
+}
+h4, .h4{
+  font-size: 1.1rem;
+  text-transform: capitalize;
+  letter-spacing: 0.05em;
+  
+  @include breakpoint("large"){
+     font-size: 1.4rem;
+  }
+}
+h5, .h5{
+  font-size: 1.1rem; 
+  text-transform: capitalize;
+  letter-spacing: 0.05em;
+  
+  @include breakpoint("large"){
+    font-size: 1.4rem;
+  }
+}
+h6, .h6{
+  font-size: 1.1rem;
+  text-transform: capitalize;
+  letter-spacing: 0.05em;
+  
+  @include breakpoint("large"){
+    
+    font-size: 1.2rem;
+  }
+}

@@ -1,0 +1,22 @@
+/*
+ * Admin Stylesheet
+ * Used to adjust backend areas and provides styles
+ */
+
+body{
+	border: solid 5px red!important;
+}
+
+.image-upload-container{
+	
+}
+.image-upload-container .image{
+	
+}
+.image-upload-container .image-preview{
+	height: 100px;
+	width: 100%px;
+}
+.image-upload-container .image-controls{
+	margin-top: 10px;
+}

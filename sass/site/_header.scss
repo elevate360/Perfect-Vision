@@ -1,0 +1,119 @@
+/*
+ * Header styling
+ */
+
+.site-header{
+  background-color: $color__blue_normal;
+  color: $color__white;
+}
+
+.logo-wrap{
+  height: auto;
+  z-index: 5;
+  position: relative;
+  max-height: none;
+  
+  img{
+    max-height: 50px;
+    height: auto;
+  }
+  
+  //adjust logo for larger screens
+  @include breakpoint('medium'){
+     
+      height: auto;
+      max-height: 60px;
+      
+      img{
+        max-height: 100%;
+        height: auto;
+      }
+  }
+}
+
+//Hero banner section
+.header-banner{
+  position: relative;
+  z-index: 2;
+  
+  .background-image,
+  .overlay{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+  }
+  .background-image{
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    
+  }
+  .overlay{
+    opacity: 0.3;
+  }
+  .content{
+    position: relative;
+    
+    & > div{
+      position: relative;
+    }
+  }
+  .content .title,
+  .content .subtitle{
+    color: inherit;
+  }
+  .badge{
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    left: calc(50% - 75px);
+    bottom: calc(0% - 75px);
+    
+    background-size: contain;
+    background-position: center center;
+    background-repeat: no-repeat;
+    
+    @include breakpoint("medium"){
+      right: 0px;
+      left: auto;
+      bottom: -50px;
+      width: 175px;
+      height: 175px;
+    }
+  }
+  
+}
+
+//CTA hero section
+.header-hero{
+  
+  position:relative;
+  
+  .background-image,
+  .background-color{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+  }
+  .background-image{
+
+   background-repeat: no-repeat;
+   background-position: center center;
+   background-size: auto 100%;
+   backtround-origin: content-box;
+   padding: 15px 0px;
+  }
+  .background-color{
+  
+  }
+  .content{
+
+    position: relative;
+  }
+}
+
+

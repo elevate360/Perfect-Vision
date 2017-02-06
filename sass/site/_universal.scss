@@ -1,0 +1,123 @@
+/*
+ * Universal styles applied to the site
+ */
+
+
+.cf:before,
+.cf:after {
+    content: " "; /* 1 */
+    display: table; /* 2 */
+}
+
+.cf:after {
+    clear: both;
+}
+
+.site-content{
+  background: $color__white;
+}
+
+
+//Association logos
+.association-logos{
+  background-color: $color__white;
+  
+  .logo{
+    
+  }
+  
+}
+
+//Comment replies
+.comment-respond{
+  padding:20px;
+  background-color: $color__off_white;
+}
+
+
+//Fixed right social media menu
+.sticky-side-element{
+  position: fixed;
+  display: flex;
+  bottom: 0px;
+  width: 100%;
+  left: 0px;
+  z-index: 10;
+  
+  .element{
+    
+    flex-grow: 1;
+    text-align: center;
+    color: $color__white;
+    float: left;
+    
+    a{
+      color: $color__white;
+      background-color: $color__light_gray;
+      display: inline-block;
+      height: 50px;
+      width: 50px;
+      line-height: 50px;
+      padding-left: 15px;
+      padding-right: 15px;
+      width: 100%;
+      
+      i{
+        line-height: 50px;
+      }
+    }
+    
+    &.facebook a{
+      background-color: $color__facebook;
+      font-size: 1.7rem;
+    }
+    &.twitter a{
+      background-color: $color__twitter;
+      font-size: 1.7rem;
+    }
+    &.quote a{
+      width: 100%;
+      background-color: $color__blue_normal;
+      text-transform: uppercase;
+      @include font-size(1.2);
+    }
+    
+  }
+  
+  //Large profiles restyling (non flex styling)
+  @include breakpoint("large"){
+    
+    width:auto;
+    display: block;
+    transform: rotate(-90deg);
+    transform-origin: top right;
+    right: 75px;
+    left: auto;
+    bottom: auto;
+    top: 25%;
+    
+    .element{
+      
+      a{
+        height: 75px;
+        width: 75px;
+        line-height: 75px;
+        width: auto;
+        
+        i{
+          line-height: 75px;
+        }
+      }
+
+      &.quote a{
+        width: auto;
+      }
+     
+      
+      
+    }
+    
+  }
+  
+  
+}

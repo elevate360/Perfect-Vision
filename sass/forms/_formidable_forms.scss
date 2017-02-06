@@ -1,0 +1,15 @@
+/*
+ * Overrides for formidable forms plugin
+ */
+
+.frm_forms{
+  background-color: $color__off_white;
+  padding: 25px;
+  
+  
+  input,
+  select,
+  textarea{
+    letter-spacing: 0.05em;
+  }
+}

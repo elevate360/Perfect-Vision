@@ -1,0 +1,53 @@
+
+button,
+input,
+select,
+textarea{
+  @include font-size(0.9);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="url"],
+input[type="password"],
+input[type="search"],
+input[type="number"],
+input[type="tel"],
+input[type="range"],php
+input[type="date"],
+input[type="month"],
+input[type="week"],
+input[type="time"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="color"],
+textarea {
+	padding: 14px 28px;
+	border: 0px;
+	background: $color__white;
+	color: $color__dark_gray;
+
+	&:focus {
+		color: $color__text-input-focus;
+	}
+	
+	@include input-placeholder-styles;
+}
+
+input[type="checkbox"],
+input[type="radio"]{
+  
+}
+
+select {
+	
+}
+
+textarea {
+	width: 100%;
+}
+
+//style the default placeholder fields
+
+
+

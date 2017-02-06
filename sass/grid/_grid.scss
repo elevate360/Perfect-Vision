@@ -1,0 +1,261 @@
+/*
+ * All Responsive elements and styling here
+ */
+
+
+
+/*rows*/
+.el-row{
+  padding: 0px;
+  margin: 0px auto;
+   
+  &.inner{
+    max-width: $grid-max-width;
+  }
+  &.inner-small{
+    max-width: $grid-max-width / 1.5;
+  }
+  
+  &:before,
+  &:after{
+    content: ' ';
+    display: table;
+  }
+  &:after{
+    clear: both;
+  }
+  
+  //Nested containers is wider, to remove the double padding from inner columns
+  &.nested{
+    width: calc(100% + (#{$grid-gutter} * 2));
+    position: relative;
+    left: -$grid-gutter;
+  }
+  
+}
+
+/*columns*/
+.el-col,
+[class*='el-col']{
+  float: left;
+  padding: 0px $grid-gutter;
+  width: 100%;
+  // border: dashed 1px red;
+  
+  &.collapse{
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+}
+
+/*debug*/
+.debug .el-row,
+.debug [class*="el-col"]{
+  border: solid 1px red!important;
+}
+
+
+/*responsive breakpoints (uses breakpoint responsive map)*/
+@each $breakpoint, $value in $breakpoint-map{
+  
+  @media all and (min-width: map-get($value, min-width)){
+    
+    //Margin Styles
+    
+    
+    //bottom & top margins
+    @each $margin-top-bottom-key, $margin-top-bottom-value in $margin-top-bottom{  
+      
+      .#{$breakpoint}-#{$margin-top-bottom-key}{
+        margin-bottom: $margin-top-bottom-value;
+        margin-top: $margin-top-bottom-value;
+      }
+    }
+    
+     //top margings
+    @each $margin-top-key, $margin-top-value in $margin-top{  
+      
+      .#{$breakpoint}-#{$margin-top-key}{
+        margin-top: $margin-top-value;
+      }
+    }
+    
+    //bottom margins
+    @each $margin-bottom-key, $margin-bottom-value in $margin-bottom{  
+      
+      .#{$breakpoint}-#{$margin-bottom-key}{
+        margin-bottom: $margin-bottom-value;
+      }
+    }
+    
+    
+    //left margins
+    @each $margin-left-key, $margin-left-value in $margin-left{
+   
+      .#{$breakpoint}-#{$margin-left-key}{
+        margin-left: $margin-left-value;
+      }
+      
+    }
+    //right margins
+    @each $margin-right-key, $margin-right-value in $margin-right{
+   
+      .#{$breakpoint}-#{$margin-right-key}{
+        margin-right: $margin-right-value;
+      }
+      
+    }
+    //left and right margins
+    @each $margin-left-right-key, $margin-left-right-value in $margin-left-right{
+   
+      .#{$breakpoint}-#{$margin-left-right-key}{
+        margin-left: $margin-left-right-value;
+        margin-right: $margin-left-right-value;
+      }
+      
+    }
+    
+    
+    //Padding Styles
+    
+    //top padding
+    @each $padding-top-key, $padding-top-value in $padding-top{  
+      
+      .#{$breakpoint}-#{$padding-top-key}{
+        padding-top: $padding-top-value;
+      }
+    }
+    //bottom padding
+    @each $padding-bottom-key, $padding-bottom-value in $padding-bottom{  
+      
+      .#{$breakpoint}-#{$padding-bottom-key}{
+        padding-bottom: $padding-bottom-value;
+      }
+    }
+    
+    //bottom & top padding
+    @each $padding-top-bottom-key, $padding-top-bottom-value in $padding-top-bottom{  
+      
+      .#{$breakpoint}-#{$padding-top-bottom-key}{
+        padding-bottom: $padding-top-bottom-value;
+        padding-top: $padding-top-bottom-value;
+      }
+    }
+    
+    //TODO: Add left and right margin here (perhaps)
+    
+    //Alignments
+    .#{breakpoint}-align-left{
+      text-align: left;
+    }
+    .#{breakpoint}-align-right{
+      text-align: right;
+    }
+    .#{breakpoint}-align-center{
+      text-align: center;
+    }
+    
+    //Aspect ratios
+    @each $aspect-ratio-key, $aspect-ratio-value in $aspect-ratio-map{
+      
+      //For each breakpoint
+      .#{$breakpoint}-#{$aspect-ratio-key}{
+        
+         //get the value, used for padding bottom
+         @each $key, $value in $aspect-ratio-value{
+           padding-bottom: $value;
+         }
+
+      }
+ 
+    }
+    
+    
+  
+    //grid elements
+    @for $counter from 1 through $grid-columns{
+      
+      .el-col-#{$breakpoint}-#{$counter}{
+        width: percentage( $counter / $grid-columns);
+      }
+      
+    } 
+    
+    //offsets (to push columns X columns from the left)
+    @for $counter from 1 through $grid-columns{
+      
+      .el-col-#{$breakpoint}-offset-#{$counter}{
+        left: percentage( $counter / $grid-columns);
+        position: relative;
+      }
+      
+    }
+    
+    //Alignments
+   .#{$breakpoint}-align-right{
+      text-align: right;
+    }
+    .#{$breakpoint}-align-left{
+      text-align: left;
+    }
+    .#{$breakpoint}-align-center{
+      text-align: center;
+    }
+    
+    //CLEARINGS
+    
+    //row of 1
+    .#{$breakpoint}-row-of-one{
+
+      > *[class*="el-col"]{
+        clear: both;
+      }
+      
+    }
+    
+    //row of 2
+    .#{$breakpoint}-row-of-two{
+      
+      > *[class*="el-col"]:nth-of-type(2n-1){
+        clear: left;
+      }
+      > *[class*="el-col"]:nth-of-type(2n-0){
+        clear: right;
+      }
+    }
+    
+     //row of 3
+    .#{$breakpoint}-row-of-three{
+      
+      > *[class*="el-col"]:nth-of-type(3n-2){
+        clear: left;
+      }
+      > *[class*="el-col"]:nth-of-type(3n-1){
+        clear: none;
+      }
+      > *[class*="el-col"]:nth-of-type(3n-0){
+        clear: right;
+      }
+    }
+    
+     //row of 4
+    .#{$breakpoint}-row-of-four{
+      
+      > *[class*="el-col"]:nth-of-type(4n-3){
+        clear: left;
+      }
+      > *[class*="el-col"]:nth-of-type(4n-2){
+        clear: none;
+      }
+      > *[class*="el-col"]:nth-of-type(4n-1){
+        clear: none;
+      }
+      > *[class*="el-col"]:nth-of-type(4n-0){
+        clear: right;
+      }
+    }
+    
+    
+  }
+}
+

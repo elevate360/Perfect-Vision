@@ -1,0 +1,15 @@
+/*
+ * Additional theme adjustments for theme customizer
+ * (Adjusts edit icons used in customizer)
+ */
+
+.header-hero .background-color .customize-partial-edit-shortcut-button{
+	top: 15px;
+	left: 15px;
+}
+.header-hero .background-image .customize-partial-edit-shortcut{
+	left: calc(50% - 15px);
+	top: calc(50% - 15px);
+	
+}
+

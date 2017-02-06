@@ -1,0 +1,28 @@
+.button,
+a.button{
+  
+  @include button-styling; 
+  
+  //primarey buttons (same as standard buttons)
+  &.primary-button{
+    background-color: $color__blue_normal;
+    color: $color__white;
+    
+    &:hover,
+    &:focus{
+      background-color: $color__blue_dark;
+    }
+  }
+  
+  //Secondary buttons
+  &.secondary-button{
+    background-color: $color__red_normal;
+    color: $color__white;
+    
+    &:hover,
+    &:focus{
+      background-color: $color__red_dark;
+    }
+  }
+  
+}

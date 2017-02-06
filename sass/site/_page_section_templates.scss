@@ -1,0 +1,39 @@
+/*
+ * Page Section Templates
+ * Used to add additional styling to the Advanced Custom Fields content sections used on pages / posts
+ */
+
+
+.content_section{
+ 
+  
+  //full width image template
+  &.full_width_image_section{
+    
+     img{
+      width: 100%;
+    }  
+  }
+  
+  //half width image template
+  &.half_width_image_section{
+    
+    img{
+      width: 100%;
+    }
+    
+  }
+  
+  //Left right highlight section
+  &.left_right_highlight_section{
+    background-color: $color__light_white;
+    
+    ul:last-of-type{
+      padding-left: 0px;
+      margin-bottom: 0px;
+      margin-left: 25px;
+    }
+  }
+  
+  
+}

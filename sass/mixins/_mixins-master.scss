@@ -1,0 +1,118 @@
+// Rem output with px fallback
+@mixin font-size($sizeValue: 1) {
+	font-size: ($sizeValue * 16) * 1px;
+	font-size: $sizeValue * 1rem;
+}
+
+// Center block
+@mixin center-block {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+// Clearfix
+@mixin clearfix() {
+	content: "";
+	display: table;
+	table-layout: fixed;
+}
+
+// Clear after (not all clearfix need this also)
+@mixin clearfix-after() {
+	clear: both;
+}
+
+
+//Generic styling applied to buttons and certain form elements
+@mixin button-styling(){
+  border-radius: 0px;
+  padding: 14px 28px;
+  font-size: 1rem;
+  display: inline-block;
+  text-transform: uppercase;
+  background-color: $color__blue_normal;
+  color: $color__white;
+  border: 0px;
+  @include simple-transition;
+  
+  //hover, show blue
+  &:hover,
+  &:active,
+  &:focus{
+    background-color: $color__blue_dark;
+    color: $color__white;
+  }
+}
+
+
+//Applies a simple transition for all
+@mixin simple-transition(){
+  -webkit-transition: all 250ms ease;
+  -moz-transition: all 250ms ease;
+  -ms-transition: all 250ms ease;
+  transition: all 250ms ease;
+}
+
+/**
+ *   Applies the basic placeholder styles for form elements, cross browser
+ */
+@mixin input-placeholder-styles(){
+  &::-webkit-input-placeholder {
+      color: $color__gray !important;
+  }
+  
+  &:-moz-placeholder { /* Firefox 18- */
+     color: $color__gray !important;
+  }
+  
+  &::-moz-placeholder {  /* Firefox 19+ */
+     color: $color__gray !important;
+  }
+  
+  &:-ms-input-placeholder {  
+     color: $color__gray !important;
+  }
+  
+}
+
+//Responsive breakpoints map
+
+//outputs styles for a specific breakpoint
+@mixin breakpoint($breakpoint-name){
+  
+  //check if we have this key
+  @if map-has-key($breakpoint-map, $breakpoint-name){
+    //go through all breakpoints we have
+    @each $breakpoint-key, $breakpoint-value in $breakpoint-map{
+      
+      //display only for this size
+      @if $breakpoint-name == $breakpoint-key{
+         @media all and (min-width: map-get($breakpoint-value, 'min-width')){
+          //display content
+          @content;
+        }
+      }
+    }
+  }
+  
+}
+
+//Output styles that only work up to a set breakpoint (not including it)
+@mixin upto-breakpoint($breakpoint-name){
+  
+  //check if breakpoint exists
+  @if map-has-key($breakpoint-map, $breakpoint-name){
+    //go through all breakpoints
+    @each $breakpoint-key, $breakpoint-value in $breakpoint-map{
+      //execute only for our required breakpoint
+      @if $breakpoint-name == $breakpoint-key{
+        
+        @media all and (max-width: map-get($breakpoint-value, 'min-width')){
+          @content;
+        }
+      }
+    }
+  }
+  
+}

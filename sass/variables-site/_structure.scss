@@ -1,0 +1,140 @@
+$size__site-main: 100%;
+$size__site-sidebar: 25%;
+
+/*main breakpoints for responsive*/
+$breakpoint-map: (
+
+  small: (
+    min-width: 0em
+  ),
+  medium: (
+    min-width: 40em
+  ),
+  large: (
+    min-width: 70em
+  )
+  
+);
+
+/*Aspect ratios*/
+$aspect-ratio-map: (
+  
+  aspect-1-1: (
+    padding-bottom: 100%
+  ),
+  aspect-1-2: (
+    padding-bottom: 50%
+  ),
+  aspect-16-9: (
+    padding-bottom: 56.25%
+  ),
+  aspect-3-4:(
+    padding-bottom: 75%
+  ),
+  aspect-21-9: (
+    padding-bottom: 42.857%
+  ),
+  aspect-1-3: (
+    padding-bottom: 33.33%
+  ),
+  aspect-1-4: (
+    padding-bottom: 25%
+  )
+
+);
+
+/*grid elements*/
+$grid-columns: 12;
+$grid-gutter: 15px; 
+$grid-max-width: 1280px;
+
+/*top margins*/
+$margin-top: (
+  margin-top-none: 0px,
+  margin-top-tiny: 5px,
+  margin-top-small: 15px,
+  margin-top-medium: 30px,
+  margin-top-large: 45px,
+  margin-top-x-large: 60px,
+  margin-top-xx-large: 120px
+);
+/*bottom margins*/
+$margin-bottom: (
+  margin-bottom-none: 0px,
+  margin-bottom-tiny: 5px,
+  margin-bottom-small: 15px,
+  margin-bottom-medium: 30px,
+  margin-bottom-large: 45px,
+  margin-bottom-x-large: 60px,
+  margin-bottom-xx-large: 120px
+);
+/*top & bottom margins*/
+$margin-top-bottom: (
+  margin-top-bottom-none: 0px,
+  margin-top-bottom-tiny: 5px,
+  margin-top-bottom-small: 15px,
+  margin-top-bottom-medium: 30px,
+  margin-top-bottom-large: 45px,
+  margin-top-bottom-x-large: 60px,
+  margin-top-bottom-xx-large: 120px
+);
+
+/*left margings*/
+$margin-left: (
+  margin-left-none: 0px,
+  margin-left-tiny: 5px,
+  margin-left-small: 15px,
+  margin-left-medium: 30px,
+  margin-left-large: 45px,
+  margin-left-x-large: 60px,
+  margin-left-xx-large: 120px
+);
+/*right margings*/
+$margin-right: (
+  margin-right-none: 0px,
+  margin-right-tiny: 5px,
+  margin-right-small: 15px,
+  margin-right-medium: 30px,
+  margin-right-large: 45px,
+  margin-right-x-large: 60px,
+  margin-right-xx-large: 120px
+);
+/*left and right margins*/
+$margin-left-right: (
+  margin-left-right-none: 0px,
+  margin-left-right-tiny: 5px,
+  margin-left-right-small: 15px,
+  margin-left-right-medium: 30px,
+  margin-left-right-large: 45px,
+  margin-left-right-x-large: 60px,
+  margin-left-right-xx-large: 120px
+);
+
+/*paddings*/
+$padding-top: (
+  padding-top-none: 0px,
+  padding-top-tiny: 5px,
+  padding-top-small: 15px,
+  padding-top-medium: 30px,
+  padding-top-large: 45px,
+  padding-top-x-large: 60px,
+  padding-top-xx-large: 120px
+);
+$padding-bottom: (
+  padding-bottom-none: 0px,
+  padding-bottom-tiny: 5px,
+  padding-bottom-small: 15px,
+  padding-bottom-medium: 30px,
+  padding-bottom-large: 45px,
+  padding-bottom-x-large: 60px,
+  padding-bottom-xx-large: 120px
+);
+$padding-top-bottom: (
+  padding-top-bottom-none: 0px,
+  padding-top-bottom-tiny: 5px,
+  padding-top-bottom-small: 15px,
+  padding-top-bottom-medium: 30px,
+  padding-top-bottom-large: 45px,
+  padding-top-bottom-x-large: 60px,
+  padding-top-bottom-xx-large: 120px
+);

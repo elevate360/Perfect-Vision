@@ -1,0 +1,194 @@
+
+//Widget styling
+.widget {
+  float: left;
+  width: 100%;
+	margin: 0 0 1.5em;
+
+	/* Make sure select elements fit in widgets. */
+	select {
+		max-width: 100%;
+	}
+}
+
+
+//WordPress default widgets
+.widget_categories,
+.widget_archive,
+.widget_tag_cloud,
+.widget_pages{
+  border-top: solid 5px $color__red_normal;
+  
+  .widget-title{
+    color: $color__subtle_gray;
+    margin-top: 25px;
+  }
+  
+  ul{
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+    
+    li{
+      display: block;
+      position: relative;
+      
+      a{
+        color: $color__gray;
+        border-bottom: dashed 2px $color__subtle_gray;
+        padding: 10px 10px 10px 50px;
+        display: block;
+        text-transform: uppercase;
+      }
+      
+      &:before{
+        content: '';
+        background-image: url('img/icon-arrow-right.png');
+        position: absolute;
+        top: 15px;
+        left: 10px;
+        width: 25px;
+        height: 25px;
+        background-size: contain;
+        background-position: center;
+        background-repeat: none;
+      }
+      
+      &:hover > a,
+      &:active > a{
+        background-color: $color__red_dark;
+        border-bottom: dashed 2px $color__red_dark;
+        color: $color__white;
+      }
+      
+    }
+    
+    ul{
+      padding-left: 30px;
+    }
+    
+  }
+  
+  
+}
+
+
+//WordPress Tag Cloud Widget
+.widget_tag_cloud{
+  .tagcloud{
+    a{
+      font-size: 1rem!important;
+      border: dashed 2px $color__subtle_gray;
+      color: $color__gray;
+      margin: 10px 10px 0px 0px;
+      padding: 7px 14px;
+      display: inline-block;
+      
+      &:hover,
+      &:focus{
+        background-color: $color__red_normal;
+        color: $color__white;
+        @include simple-transition;
+        border: solid 2px $color__red_normal;
+      }
+    }
+    
+  }
+}
+
+
+//Simple WYSIWYG widget
+.widget_el_editor_widget{
+  background: $color__off_white;
+}
+
+
+//Formidable forms widget (plugin)
+.widget_frm_show_form{
+  padding: 15px;
+  background: $color__off_white;
+}
+
+//Download widget
+.widget_el_download_widget{
+ 
+  .widget-wrap{
+    position: relative;
+    padding: 15px;
+  }
+  .background-image{
+    position: absolute;
+    width: 100%;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    background-position: bottom right;
+    background-size: contain;
+    background-origin: content-box;
+    padding: 10px;
+    background-repeat: no-repeat;
+  }
+  .widget-title{
+    word-spacing: 999px;
+  }
+  .widget-title,
+  .widget-content{
+    color: inherit;
+    position: relative;
+    
+    .download{
+      color: inherit;
+      border-width: 2px;
+      border-style: solid;
+      display: inline-block;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      line-height: 40px;
+      text-align: center;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+  }
+  
+  
+  
+  
+}
+
+
+//Custom menu widgets (footer or sidebar)
+.widget.widget_nav_menu{
+  border-top: solid 5px $color__red_normal;
+  
+  .widget-title{
+    color: $color__subtle_gray;
+    font-size: 1.4rem;
+    margin-top: 25px;
+  }
+  .menu{
+    margin: 0px;
+    padding: 0px;
+    
+    li{
+      display:block;
+      
+      a{
+        padding: 5px 0px;
+        color: $color__gray;
+      }
+      
+    }
+    ul{
+      
+      
+    }
+    
+  }
+
+  
+  
+  
+}
+
+
