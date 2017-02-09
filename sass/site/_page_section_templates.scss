@@ -4,8 +4,9 @@
  */
 
 
-.content_section{
+.content-section{
  
+  position: relative;
   
   //full width image template
   &.full_width_image_section{
@@ -26,7 +27,7 @@
   
   //Left right highlight section
   &.left_right_highlight_section{
-    background-color: $color__light_white;
+    background-color: $color__gray_extra_light;
     
     ul:last-of-type{
       padding-left: 0px;
@@ -37,3 +38,185 @@
   
   
 }
+
+//Used in several components, to have background images
+.section-background-image{
+  position: absolute;
+  top: 0%;
+  width: 100%;
+  height: 100%;
+  left: 0%;
+  
+   
+  
+  //top roght aligned bg image
+  &.top-right{
+    
+     @include breakpoint("medium"){
+      .image{
+        background-position: top right;
+        background-size: 50% auto;
+      }
+    }
+  }
+  
+  &.top-left{
+    
+    @include breakpoint("medium"){
+      
+      .image{
+        background-position: top left;
+        background-size: 50% auto;
+      }
+    }
+   
+  }
+  
+  .image{
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
+    opacity: 0.7;
+    background-size: cover;
+    
+    //larger profiles, make the opacity none;
+    @include breakpoint("medium"){
+      opacity: 1;
+    }
+  }
+  
+  
+  
+}
+
+//Two column section
+.content-section.two_column_section{
+  
+  .content{
+    
+    //on medium devices, set 2 columns
+    @include breakpoint("medium"){
+      -webkit-column-count: 2;
+      -moz-column-count: 2;
+      column-count: 2;
+      
+      p:first-of-type{
+        margin-top: 0px;
+      }
+    }
+  }
+}
+
+
+//Nested hero cards (single card with several sub-cards inside it)
+.card_hero_nested_grid{
+  
+  .hero-card{
+    padding: 30px 15px 0px 15px;
+  }
+  
+  .card .card-iner{
+    padding: 15px;
+    
+    @include breakpoint('medium'){
+      padding: 20px 30px;
+    }
+  }
+  
+  .card p:last-of-type{
+    margin-bottom: 0px;
+  }
+  
+}
+
+
+//Hero card section (Single featured card)
+.card_hero_content_section{
+  
+  .hero-card{
+    padding: 30px 60px;
+  }
+  
+}
+
+
+.hero-card{
+  
+  position: relative;
+  padding: 15px;
+  background-color: $color__white;
+  @include box-shadow();
+
+  //certain cards have an icon on the top left
+  .icon{
+    
+    position: relative;
+    
+    &:before{
+      content: ' ';
+      height: 50px;
+      position: relative;
+      width: 50px;
+      display: inline-block;
+      background-image: url('img/perfect-vision-stamp.png');
+      background-size: contain;
+      
+    }
+    //adjustmnets for medium
+    @include breakpoint('medium'){
+      
+      margin-top: -100px;
+      margin-bottom: 20px;
+     
+      &:before{
+        height: 125px;
+        width: 125px;
+      
+      }
+      
+    }
+    
+  }
+  
+  //Background image 
+  .background-image{
+    
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    height: 100%;
+    width: 100%;
+
+    .image{
+      width: 100%;
+      height: 100%;
+      background-repeat: no-repeat;
+      background-position: bottom right;
+      background-origin: content-box;
+      padding: 20px 20px 0px 20px;
+      background-size: contain;
+    }
+    
+  }
+  
+  .content-wrap{
+    position: relative;
+  }
+
+}
+
+
+//Standard CTA Section template
+.standard_cta_section{
+
+  .large-text{
+    font-size: 1.4rem;
+    
+    *{
+      font-size: inherit;
+    }
+  }
+}
+
+
+

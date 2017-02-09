@@ -1,19 +1,16 @@
 a {
-	color: $color__blue_normal;
+	color: $color__green_regular;
   text-decoration: none;
   
-  &.black{
-    color: $color__black;
-  }
-  
-  
+ 
+  //link states
 	&:visited {
-		color: $color__blue_normal;
+		color: $color__green_dark;
 	}
 	&:hover,
 	&:focus,
 	&:active {
-		color: $color__blue_light;
+		color: $color__green_light;
 	}
 	&:focus {
 		outline: thin dotted;

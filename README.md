@@ -1,3 +1,3 @@
-#YCC Chicken WordPress Theme
+#Perfect Vision
 
-A custom theme created for YCC Chicken 
+A custom theme created for perfect vision, created from elevate base

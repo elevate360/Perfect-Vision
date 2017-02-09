@@ -4,10 +4,10 @@
  */
 
 h1, h2, h3, h4, h5, h6 {
+  
 	clear: both;
-	font-weight: 600;
-	letter-spacing: 0.12em;
-	color: $color__blue_normal;
+	font-weight: $font__weight-regular;
+	color: $color__gray_regular;
 	text-transform: uppercase;
 	line-height: 1.25em;
 	margin: 0px auto 1em 0px;
@@ -17,78 +17,82 @@ h1, h2, h3, h4, h5, h6 {
 	}
 	
 	&.light{
-	  font-weight: 500;
+	  font-weight: $font__weight-light;
 	}
 	
 	&.bold{
-	  font-weight: 700;
+	  font-weight: $font__weight-semi-bold;
 	}
 	
 	&.capitalize{
 	  text-transform: capitalize;
 	}
 	
-	&.black,
-	&.black a{
-	  color: $color__black;
+	//colour adjustments
+	&.white{
+	  color: $color__white;
 	}
 	
 }
 
-h1, .h1, .hero-title{
-  font-size: 2.77rem;
-  font-weight: 600;
-  letter-spacing: 0.15em;
-  
-  @include breakpoint("large"){
-    font-size: 3.70rem;
-    
-  }
+h1, .h1{
+  font-size: 3.75rem;
+  font-weight: $font__weight-bold;
 }
 h2, .h2{
-  font-size: 1.87rem; 
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  
-  @include breakpoint("large"){
-    font-size: 2.5rem;
-  }
+  font-size: 2.187rem; 
+  color: $color__green_regular;
 }
 h3, .h3{
-  font-size: 1.26rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-size: 1.68rem;
+  font-weight: $font__weight-semi-bold;
   
-  @include breakpoint("large"){
-    font-size: 1.68rem;
-    
-  }
 }
 h4, .h4{
-  font-size: 1.1rem;
+  font-size: 1.43rem;
   text-transform: capitalize;
-  letter-spacing: 0.05em;
-  
-  @include breakpoint("large"){
-     font-size: 1.4rem;
-  }
+  color: $color__green_regular; 
 }
 h5, .h5{
-  font-size: 1.1rem; 
+  font-size: 1.43rem;
   text-transform: capitalize;
-  letter-spacing: 0.05em;
-  
-  @include breakpoint("large"){
-    font-size: 1.4rem;
-  }
 }
 h6, .h6{
-  font-size: 1.1rem;
+  font-size: 1.43rem;
   text-transform: capitalize;
-  letter-spacing: 0.05em;
+}
+
+//Additional H tags and patterns
+
+//hero banner
+h1.hero-title{
   
-  @include breakpoint("large"){
+  font-size: 3.25rem;
+  font-weight: $font__weight-bold;
+  color: $color__green_regular;
+  line-height: 1.05em;
+  
+  //On the homepage, we split the title to be fancy
+  span{
+    display: inline-block;
+    margin-right: 0.2em;
     
-    font-size: 1.2rem;
+    &:nth-of-type(1){
+      color: $color__white;
+    }
+    &:nth-of-type(2){
+      color: $color__white;
+    }
+    
   }
+  
+  //medium profiles
+  @include breakpoint("medium"){
+    font-size: 6.25rem;
+  }
+  
+}
+.hero-subtitle{
+  font-size: 1.25rem;
+  color: $color__white;
 }

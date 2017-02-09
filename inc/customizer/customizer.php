@@ -130,13 +130,16 @@ function el_customizer_functionality( $wp_customize ){
 	
 	
 	//header banner
-	$wp_customize->add_setting('el_header_banner_enabled', array('default' => true));
 	$wp_customize->add_setting('el_header_banner_background_image', array());
-	$wp_customize->add_setting('el_header_banner_featured_image', array());
 	$wp_customize->add_setting('el_header_banner_text_colour', array('default' => '#fff'));
 	$wp_customize->add_setting('el_header_banner_overlay_colour', array('default' => '#444'));
 	$wp_customize->add_setting('el_header_banner_title', array());
 	$wp_customize->add_setting('el_header_banner_subtitle', array());
+	$wp_customize->add_setting('el_header_banner_primary_button_text', array('default' => 'Primary Button'));
+	$wp_customize->add_setting('el_header_banner_primary_button_url', array());
+	$wp_customize->add_setting('el_header_banner_secondary_button_text', array('default' => 'Secondary Button'));
+	$wp_customize->add_setting('el_header_banner_secondary_button_url', array());
+	
 	
 	//footer CTA
 	$wp_customize->add_setting('el_footer_cta_enabled', array('default' => true));
@@ -212,15 +215,7 @@ function el_customizer_functionality( $wp_customize ){
 	
 	
 	//Header Banner 
-	$wp_customize->add_control('el_header_banner_enabled',
-		array(
-			'label'			=> __('Enable Banner', 'ycc'),
-			'description'	=> __('Do you want the header banner displayed? (appears on all pages)', 'ycc'),
-			'section'		=> 'el_header_banner',
-			'type'			=> 'checkbox',
-			'setting'		=> 'el_header_banner_enabled'
-		)
-	);
+
 	$wp_customize->add_control(
 		new WP_Customize_Image_Control(
 			$wp_customize,
@@ -273,16 +268,45 @@ function el_customizer_functionality( $wp_customize ){
 			'setting'		=> 'el_header_banner_subtitle'
 		)
 	);
-	$wp_customize->add_control(
-		new WP_Customize_Image_Control(
-			$wp_customize,
-			'el_header_banner_featured_image',
-			array(
-				'label'			=> __('Featured Image (bottom right of slider)', 'ycc'),
-				'section'		=> 'el_header_banner'
-			)
+	//primary button
+	$wp_customize->add_control('el_header_banner_primary_button_text',
+		array(
+			'label'			=> __('Primary Button Text', 'ycc'),
+			'description'	=> __('Text used on the first action button', 'ycc'),
+			'section'		=> 'el_header_banner',
+			'type'			=> 'text',
+			'setting'		=> 'el_header_banner_primary_button_text'
 		)
 	);
+	$wp_customize->add_control('el_header_banner_primary_button_url',
+		array(
+			'label'			=> __('Primary Button URL', 'ycc'),
+			'description'	=> __('Full URL to the target page for this button', 'ycc'),
+			'section'		=> 'el_header_banner',
+			'type'			=> 'url',
+			'setting'		=> 'el_header_banner_primary_button_url'
+		)
+	);
+	//secondary button
+	$wp_customize->add_control('el_header_banner_secondary_button_text',
+		array(
+			'label'			=> __('Primary Button Text', 'ycc'),
+			'description'	=> __('Text used on the second action button', 'ycc'),
+			'section'		=> 'el_header_banner',
+			'type'			=> 'text',
+			'setting'		=> 'el_header_banner_secondary_button_text'
+		)
+	);
+	$wp_customize->add_control('el_header_banner_secondary_button_url',
+		array(
+			'label'			=> __('Primary Button URL', 'ycc'),
+			'description'	=> __('Full URL to the target page for this button', 'ycc'),
+			'section'		=> 'el_header_banner',
+			'type'			=> 'url',
+			'setting'		=> 'el_header_banner_secondary_button_url'
+		)
+	);
+
 	
 	
 	

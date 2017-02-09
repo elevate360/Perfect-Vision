@@ -4,7 +4,7 @@
  * 
  * Displayed slightly different than other pages (inner container)
  */
-$ycc_theme = ycc_theme::getInstance();
+$theme_base = theme_base::getInstance();
 get_header(); ?>
 	<div id="primary" class="content-area el-row inner-small">
 		<main id="main" class="site-main" role="main">
@@ -15,7 +15,7 @@ get_header(); ?>
 			//get_template_part( 'template-parts/content', 'post' );
 			
 			//render the ACC page templates
-			$ycc_theme->display_page_templates($post->ID);
+			$theme_base->display_page_templates($post->ID);
 
 			the_post_navigation();
 

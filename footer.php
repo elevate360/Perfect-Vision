@@ -8,7 +8,7 @@
  *
  * @package ycc
  */
-$ycc_theme = ycc_theme::getInstance();
+$theme_base = theme_base::getInstance();
 ?>
 		</div>
 	</div><!-- #content -->
@@ -21,7 +21,7 @@ $ycc_theme = ycc_theme::getInstance();
 		
 		?>
 		
-		<div class="footer-widgets el-row inner small-margin-top-bottom-medium medium-margin-top-bottom-large">
+		<div class="footer-widgets el-row inner small-margin-top-bottom-medium medium-margin-top-bottom-x-large">
 			
 				<?php
 				//display logo
@@ -36,8 +36,13 @@ $ycc_theme = ycc_theme::getInstance();
 				do_action('el_display_footer_widgets'); 
 				
 				?>
+
+		</div>
 		
-			<div class="el-col-small-12 small-align-center">YCC POULTRY 2017 ALL RIGHTS RESERVED</div>
+		<div class="footer-attribution el-col-small-12 small-padding-top-bottom-small">
+			<div class="el-row inner">
+				Designed by Elevate
+			</div>
 		</div>
 	</footer><!-- #colophon -->
 </div><!-- #page -->

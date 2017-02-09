@@ -28,14 +28,13 @@
   
   .entry-meta{
     text-transform: uppercase;
-    color: $color__subtle_gray;
     
     a{
       color: inherit;
         
       &:hover,
       &:focus{
-         color: $color__light_gray;
+         
       }
     }
   }
@@ -48,7 +47,6 @@
   
   
   .hentry{
-    border-bottom: solid 10px $color__off_white;
     margin-bottom: 20px;
     
     @include breakpoint("medium"){
@@ -60,14 +58,13 @@
     }
     .entry-meta{
       text-transform: uppercase;
-      color: $color__subtle_gray;
       
       a{
         color: inherit;
         
         &:hover,
         &:focus{
-          color: $color__light_gray;
+
         }
       }
     }

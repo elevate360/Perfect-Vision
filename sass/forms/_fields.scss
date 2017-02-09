@@ -24,13 +24,13 @@ input[type="color"],
 textarea {
 	padding: 14px 28px;
 	border: 0px;
-	background: $color__white;
-	color: $color__dark_gray;
+	background: $color__gray_light;
+	color: $color__gray_regular;
 
 	&:focus {
 		color: $color__text-input-focus;
 	}
-	
+	//placeholder styling
 	@include input-placeholder-styles;
 }
 

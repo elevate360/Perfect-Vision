@@ -29,69 +29,54 @@ global $template;
 //echo $template;
 ?>
 <?php
-$ycc_theme = ycc_theme::getInstance();
+$theme_base = theme_base::getInstance();
 
 ?>
 </head>
 
-<body <?php body_class(''); ?>>
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NHM9BVH"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
+<body <?php body_class('debug'); ?>>
 <div id="page" class="site">
 	<a class="skip-link screen-reader-text" href="#content"><?php esc_html_e( 'Skip to content', 'ycc' ); ?></a>
 
 	<?php
 	//display the fixed social media bar on the right
-	$ycc_theme->el_display_fixed_social_bar();
+	//$ycc_theme->el_display_fixed_social_bar();
 	?>
 
+	<!--Mobile Menu-->
+	<div class="mobile-background"></div>
+	<div class="menu mobile-menu">
+		<?php wp_nav_menu( array( 'theme_location' => 'mobile-menu', 'menu_id' => 'mobile-menu', 'container' => false) ); ?>
+	</div>
+
+
 	<header id="masthead" class="site-header " role="banner">
-		<div class="el-row inner">
-			<div class="site-branding el-col-small-12">
-				<?php
-				/* */?>
-			</div><!-- .site-branding -->
-			
-			<!--NAV MENUS-->
-			<nav id="site-navigation" class="el-row small-margin-top-bottom-small" role="navigation">	
-				<div class="main-navigation left el-col-small-5 small-align-left">
-					<div class="menu main-menu">
-						<?php wp_nav_menu( array( 'theme_location' => 'left-menu', 'menu_id' => 'left-menu', 'container' => false) ); ?>
-					</div>	
-				</div>	
+		<div class="el-row inner small-padding-top-bottom-small">
+			<div class="site-branding el-col-small-12 el-col-large-3 small-align-center large-align-left">
 				<?php
 				//Display theme logo
 				if(get_theme_mod('el_logo')){
-					echo '<div class="logo-wrap el-col-small-6 el-col-large-2">';
+					echo '<div class="logo-wrap el-col-small-8 el-col-large-12 small-align-left">';
 						echo '<a href="' . esc_url( home_url( '/' ) ) . '" rel="home">';
 							do_action('el_display_theme_logo');
 						echo '</a>';
 					echo '</div>';
-				}
-				
-				
-				?>
-				<div class="main-navigation right el-col-small-5 small-align-right">
-					<div class="menu main-menu">
-						<?php wp_nav_menu( array( 'theme_location' => 'right-menu', 'menu_id' => 'right-menu', 'container' => false) ); ?>
-					</div>
-				</div>	
-				
+				}?>
 				<!--Mobile Menu for small and medium-->
-				<div class="toggle-wrap el-col-small-6 small-align-right">
-					<button class="menu-toggle button secondary-button" aria-controls="primary-menu" aria-expanded="false"><?php esc_html_e( 'Menu', 'ycc' ); ?></button>
+				<div class="toggle-wrap el-col-small-4 small-align-right">
+					<div class="menu-toggle" aria-controls="primary-menu" aria-expanded="false"><i class="icon fa fa-bars" aria-hidden="true"></i></div>
 				</div>
+			</div><!-- .site-branding -->
+			
+			
+			
+			
+			<!--NAV MENUS-->
+			<nav id="site-navigation" class="el-col-small-12 el-col-large-9 small-align-center large-align-right" role="navigation">	
 				
-				<!--Mobile Menu-->
-				<div class="main-navigation mobile el-col-small-12 small-margin-top-small">
-					<div class="menu mobile-menu">
-						<?php wp_nav_menu( array( 'theme_location' => 'mobile-menu', 'menu_id' => 'mobile-menu', 'container' => false) ); ?>
-					</div>
+				<div class="menu main-menu">
+					<?php wp_nav_menu( array( 'theme_location' => 'main-menu', 'menu_id' => 'main-nav', 'container' => false) ); ?>
 				</div>	
-				
-				
 				
 			</nav><!-- #site-navigation -->
 			
@@ -116,5 +101,5 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 	
 	?>
 
-	<div id="content" class="site-content small-padding-top-bottom-small medium-padding-bottom-xx-large">
-		<div class="el-row inner">
+	<div id="content" class="site-content">
+		<div class="el-row">

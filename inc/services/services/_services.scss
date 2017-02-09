@@ -1,0 +1,87 @@
+/*
+ * Products partial
+ */
+
+//Product listing used for quick acccess to top level products
+.service-listing{
+  
+  
+  //grid style (3 column)
+  &.grid{
+   
+    .service{
+
+      .content{
+
+      }
+      .title{
+        padding: 15px;
+      }
+      .image-wrap{
+        min-height: 70px;
+        
+        .image{
+         
+        }
+      }
+        
+    }
+   
+  }
+  
+  //list style 
+  &.list{
+    .service{
+      
+      padding-bottom: 20px;
+      
+      .image-wrap{
+        position: relative;
+        
+        .image{
+         
+          padding: 15px;
+        } 
+      } 
+    }    
+  }
+  
+}
+
+
+//Widget styling 
+.widget_el_product_top_listing{
+  
+  .widget-wrap{
+    color: $color__white;
+    padding: 15px;
+  }
+  
+  .widget-title{
+    color: inherit;      
+  }
+  
+  //list of product links
+  .product-listing-widget{
+    
+    .product{
+      display: block;
+      
+      a{
+        display: block;
+        color: inherit;
+        text-transform: uppercase;
+        padding-left: 10px;
+        padding-right: 10px;
+        
+      }
+      a:hover,
+      a:focus{
+      }
+      
+    }
+    
+  }
+  
+  
+}

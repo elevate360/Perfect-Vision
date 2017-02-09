@@ -10,10 +10,11 @@
  /**
   * Main function for site, loads other requires modules
   */
- class ycc_theme{
+  
+ class theme_base{
  	
 	private static $instance = null;
-	private $number_of_footer_widgets = 4;
+	private $number_of_footer_widgets = 6;
 	
 	/**
 	 * Main Constrcutor
@@ -22,9 +23,9 @@
 		
 		$this->load_customizer_functionality();
 		$this->load_el_content_type_class();
-		$this->load_products_content_type();
+		$this->load_services_content_type();
 		$this->load_faq_content_type();
-		$this->load_specials_content_type();
+		$this->load_conditions_content_type();
 	
 		add_action('wp_enqueue_scripts', array($this, 'enqueue_public_scripts_and_styles'));
 		add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts_and_styles'));
@@ -33,8 +34,8 @@
 		add_action('init', array($this, 'remove_content_from_post_types')); //removes the content block from some post types
 
 				
-		add_action('add_meta_boxes', array($this, 'register_post_metaboxes')); //registers metaboxes for use on posts, pages, products etc
-		add_action('save_post', array($this, 'save_post_metaboxes')); //triggers on save, to save metabox fields
+		//add_action('add_meta_boxes', array($this, 'register_post_metaboxes')); //registers metaboxes for use on posts, pages, products etc
+		//add_action('save_post', array($this, 'save_post_metaboxes')); //triggers on save, to save metabox fields
 				
 		//Custom action hooks (used in theme templates)
 		add_action('el_display_footer_widgets', array($this, 'el_display_footer_widgets'));
@@ -261,19 +262,24 @@
 		
 	}
 	
-
+	//TODO: Hook this in to colorpicker
 	/**
 	 * Localises scripts, gives our JS scripts access to variables
+	 * - Used to provide admin colourpicker with theme colours
 	 */
 	public function localize_scripts(){
 		
 		//Add our colours to our admin scripts (so they can be used in colour pickers)
 		$theme_colours = array(
-			'blue_normal' 	=> '#008da8',
-			'blue_dark' 	=> '#025f72',
-			'blue_light'	=> '#63d7ee',
-			'red_normal'	=> '#9f393d',
-			'red_dark'		=> '#6e1f22',
+			'green_light' 	=> '#73E1C7',
+			'green_dark' 	=> '#0D7B61',
+			'green_regular'	=> '#40ae94',
+			'orange_light'	=> '#FFCB66',
+			'orange_dark'	=> '#CC6500',
+			'orange_regular'=> '#ff9833',
+			'gray_extra_light' => '#eeeeee',
+			'gray_light'	=> 'f7f7f7',
+			'gray_regular'	=> '#333333',
 			'black'			=> '#000000',
 			'white'			=> '#ffffff'
 		);
@@ -310,22 +316,22 @@
 		$el_faq = $this->get_faq_object();
 	}
 	/**
-	 * Loads the special content type
+	 * Loads the conditions content type
 	 */
-	public function load_specials_content_type(){
-		require get_template_directory() . '/inc/specials/el_specials.php';
-		$el_specials = $this->get_specials_object();
+	public function load_conditions_content_type(){
+		require get_template_directory() . '/inc/conditions/el_conditions.php';
+		$el_conditions = $this->get_conditions_object();
 		
 	}
 	
 	/**
 	 * Loads the product content type for use
 	 * 
-	 * Loads the products file located in '/inc/products/el_products.php'
+	 * Loads the products file located in '/inc/services/el_services.php'
 	 */
-	public function load_products_content_type(){
-		require get_template_directory() . '/inc/products/el_products.php';
-		$el_products = $this->get_products_object();
+	public function load_services_content_type(){
+		require get_template_directory() . '/inc/services/el_services.php';
+		$el_services = $this->get_services_object();
 		
 	}
 	
@@ -338,17 +344,17 @@
 	
 	
 	/**
-	 * Gets the 'el_product' object instance 
+	 * Gets the 'el_services' object instance 
 	 * 
-	 * Used for when we need to get the products object for manipulation so we don't hard code 
+	 * Used for when we need to get the services object for manipulation so we don't hard code 
 	 * it's value in templates 
 	 */
-	public function get_products_object(){
+	public function get_services_object(){
 			
 		$result = false;
 		
-		if(class_exists('el_products')){
-			$result = el_products::getInstance();
+		if(class_exists('el_services')){
+			$result = el_services::getInstance();
 		}
 		
 		return $result; 
@@ -369,14 +375,14 @@
 	}
 	
 	/**
-	 * Gets the 'el_specials' object instance
+	 * Gets the 'el_conditions' object instance
 	 * 
 	 * Used to access specific functions inside that class
 	 */
-	public function get_specials_object(){
+	public function get_conditions_object(){
 		$result = false;
-		if(class_exists('el_specials')){
-			$result = el_specials::getInstance();
+		if(class_exists('el_conditions')){
+			$result = el_conditions::getInstance();
 		}
 		return $result;
 	}
@@ -435,7 +441,7 @@
 	 */
 	public function enqueue_public_scripts_and_styles(){
 		$dir = get_stylesheet_directory_uri();
-		wp_enqueue_style('theme-fonts', '//fonts.googleapis.com/css?family=Dosis:300,400,500,600,700');
+		wp_enqueue_style('theme-fonts', '//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700');
 		wp_enqueue_style('theme-font-awesome-icons' , '//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
 		wp_enqueue_script('theme-scripts', $dir . '/js/theme_public_scripts.js', array('jquery'));
 	}
@@ -536,7 +542,7 @@
 
 	/**
 	 * Displays any Advanced Custom Fields page templates that this post has assigned to it. Template layouts are
-	 * shared across post types so we have this one function to render them.
+	 * shared across post types (so we have this one function to render them.
 	 */
 	public static function display_page_templates($post_id){
 		
@@ -554,6 +560,8 @@
 	
 	/**
 	 * Creates the HTML markup for the Advanced Custom Field template sections on each page / post.
+	 * 
+	 * Output is determined by the type of section chosen. 
 	 */
 	public function get_page_templates_html($post_id){
 		
@@ -565,123 +573,458 @@
 			
 		if( have_rows('content_layout_templates', $post_id) ){
 			
+			
 			while( have_rows('content_layout_templates') ){
-				
+					
 				$row = the_row();
-				
 				$layout = get_row_layout();
 				
-				//left and right column layout (with optional highlight background)
-				if($layout == 'left_right_content_section' || $layout == 'left_right_highlight_section'){
+		
+				
+				//Card Hero Content Section
+				//Displays a hero card in the middle of the section
+				if($layout == 'card_hero_content_section'){
+					
+					$card_layout_style = get_sub_field('card_layout_style');
+					$card_title = get_sub_field('card_title');
+					$card_subtitle = get_sub_field('card_subtitle');
+					$card_readmore = get_sub_field('card_readmore');
+					$card_background_image = get_sub_field('card_background_image');
+					$section_background_image = get_sub_field('section_background_image');
+					$section_background_colour = get_sub_field('section_background_colour');
+					
+					$style = '';
+					$style .= !empty($section_background_colour) ? 'background-color: ' . $section_background_colour . ';' : '';
+					//output
+					$html .= '<section style="' . $style . '" class="el-row content-section ' . $layout . ' small-padding-top-bottom-medium medium-padding-top-xx-large medium-padding-bottom-large">';
+						
+						//background image
+						if(!empty($section_background_image)){
+							$html .= '<div class="section-background-image top-right">';
+								$url = wp_get_attachment_image_src($section_background_image, 'medium', false)[0]; 
+								$html .= '<div class="image" style="background-image:url(' . $url .');"></div>';
+							$html .= '</div>';
+						}
+						
+						$html .= '<div class="el-row inner">';
+						
+							$html .= '<div class="hero-card icon el-col-small-12 el-col-medium-8 el-col-medium-offset-2">';
+								
+								//icon
+								$html .= '<div class="icon"></div>';
+								
+								
+								//background image
+								if(!empty($card_background_image)){
+									$url = wp_get_attachment_image_src($card_background_image, 'medium', false)[0];
+									$html .= '<div class="background-image">';
+										$html .= '<div class="image" style="background-image:url(' . $url .');"></div>';
+									$html .= '</div>';
+								}
+	
+								//content
+								$html .= '<div class="content-wrap collapse el-col-small-12 el-col-medium-8">';
+									$html .= '<h2 class="title">' . $card_title . '</h2>';
+									if(!empty($card_subtitle)){
+										$html .= '<div class="subtitle">';
+											$html .= $card_subtitle;
+										$html .= '</div>';
+									}
+									if(!empty($card_readmore)){
+										$html .= '<a href="' . get_permalink($card_readmore) . '" title="' . __('Read more', 'perfectvision') . '">';
+											$html .= '<div class="button primary-button">' . __('View More', 'perfectvision') . '</div>';
+										$html .= '</a>';
+									}
+								$html .= '</div>';
+								
+								
+							$html .= '</div>';	
+						$html .= '</div>';
+					$html .= '</section>';
+					
+				}
+
+				//Card hero grid
+				//A single hero card with multiple sub-cards inside, displayed in a 2 column fashion 
+				else if($layout == 'card_hero_nested_grid'){
+										
+					//get section background colour
+					$section_background_colour = get_sub_field('section_background_colour');
+		
+					//We use a repeater field here for each of the cards
+					if( have_rows('cards')){
+						
+						$style = '';
+						$style .= (!empty($section_background_colour)) ? 'background-color: ' . $section_background_colour . ';' : '';
+						
+						$html .= '<section style="' . $style . '" class="el-row small-padding-top-bottom-medium medium-padding-top-bottom-large content-section ' . $layout .'">';
+							
+							$html .= '<div class="el-row inner medium-row-of-two large-row-of-three ">';
+								
+								$html .= '<div class="hero-card el-row">';
+								
+									//output each card
+									while ( have_rows('cards')){
+										
+										$row = the_row();
+										
+										$card_image = get_sub_field('card_image');
+										$card_tile = get_sub_field('card_tile');
+										$card_content = get_sub_field('card_content');
+										$card_background_colour = get_sub_field('card_background_colour');
+							
+										
+										//each column
+										$html .= '<div class="card el-col-small-12 el-col-large-6 small-margin-bottom-medium">';
+											
+											$style = '';
+											$style .= (!empty($card_background_colour)) ? 'background-color: ' . $card_background_colour . ';' : '';
+											$html .= '<div  style="' . $style . '" class="card-iner el-row small-padding-top-bottom-small">';
+												//main content
+												$html .= '<div class="content-wrap el-col-small-12 el-col-medium-8 small-align-center medium-align-left">';
+													if(!empty($card_tile)){
+														$html .= '<h3 class="title capitalize white">' . $card_tile . '</h3>';
+													}
+													if(!empty($card_content)){
+														$html .= '<div class="content">' . $card_content . '</div>';
+													}
+												$html .= '</div>';
+												
+												//image
+												if(!empty($card_image)){
+													$html .= '<div class="el-col-small-12 el-col-medium-4 small-align-center medium-align-right">';
+														$url = wp_get_attachment_image_src($card_image, 'medium', false)[0];
+														$html .= '<img class="image" src="' . $url . '"/>';
+													$html .= '</div>';
+												}
+											$html .= '</div>';
+										$html .= '</div>';
+										
+										
+										
+									}
+								$html .= '</div>';
+							$html .= '</div>';
+						$html .= '</div>';
+						
+					}
+				}
+
+				
+				//Two column section
+				//Displays a left and right content area with optional title, readmore, background image and colour
+				else if($layout == 'two_column_section'){
 					
 					$title = get_sub_field('title');
-					$left_content = get_sub_field('left_column_text');
-					$right_content = get_sub_field('right_column_text');
-									
-					$html .= '<div class="el-row small-margin-bottom-medium small-padding-top-bottom-small  content_section ' . $layout .'">';
-						if(!empty($title)){
-							//adjust title based on which section it's used in	
-							if($layout == 'left_right_content_section'){
-								$html .= '<h2 class="el-col-small-12">' . $title . '</h2>';
-							}else{
-								$html .= '<h3 class="el-col-small-12">' . $title . '</h3>';
-							}
-						}	
-						if(!empty($left_content)){
-							$html .= '<div class="el-col-small-12 el-col-medium-6">';
-								$html .= $left_content;
+					$content = get_sub_field('content');
+					$read_more_url = get_sub_field('read_more_url');
+					$section_background_colour = get_sub_field('section_background_colour');
+					$section_background_image = get_sub_field('section_background_image');
+								
+					$style = '';
+					$style .= !empty($section_background_colour) ? 'background-color: ' . $section_background_colour . ';' : '';
+					$html .= '<section style="' . $style .'" class="el-row small-padding-top-bottom-medium medium-padding-top-bottom-large  content-section ' . $layout .'">';
+						
+						//background image
+						if(!empty($section_background_image)){
+							$html .= '<div class="section-background-image top-right">';
+								$url = wp_get_attachment_image_src($section_background_image, 'medium', false)[0]; 
+								$html .= '<div class="image" style="background-image:url(' . $url .');"></div>';
 							$html .= '</div>';
 						}
-						if(!empty($right_content)){
-							$html .= '<div class="el-col-small-12 el-col-medium-6">';
-								$html .= $right_content;
-							$html .= '</div>';
-						}
+						
+						$html .= '<div class="el-row inner">';
+						
+							$html .= '<div class="content-wrap el-col-small-12 el-col-medium-8 el-col-medium-offset-2">';
+							
+								if(!empty($title)){
+									//adjust title based on which section it's used in	
+									$html .= '<h2 class="title small-align-center">' . $title . '</h2>';
+								}	
+								if(!empty($content)){
+									$html .= '<div class="content">';
+										$html .= $content;
+									$html .= '</div>';
+								}
 
-					$html .= '</div>';
+								if(!empty($read_more_url)){
+									$html .= '<div class="small-align-center small-margin-top-medium">';
+										$html .= '<a href="' . get_permalink($read_more_url) . '" title="' . __('Read more', 'perfectvision') . '">';
+											$html .= '<div class="button primary-button">' . __('View More', 'perfectvision') . '</div>';
+										$html .= '</a>';
+									$html .= '</div>';
+								}
+								
+							$html .= '</div>';
+
+						$html .= '</div>';
+						
+					$html .= '</section>';
 	
 				}
-				//full content section
-				else if($layout == 'full_content_section'){
-					
-					$content = get_sub_field('content');
-					
-					if(!empty($content)){
-						$html .= '<div class="el-col-small-12 small-padding-top-bottom-small content-section"' . $layout . '">';
-							$html .= $content;
-						$html .= '</div>';
-					}
-					
-				}
-				//centered CTA Section
-				else if($layout == 'standard_cta_section'){
+				
+				//Three column section
+				//Used to create a three column grid of center aligned elements (title, subtitle, image)
+				else if($layout == 'three_column_section'){
 					
 					$title = get_sub_field('title');
 					$subtitle = get_sub_field('subtitle');
-					$button_url_object = get_sub_field('button_url');
-					$button_text = get_sub_field('button_text');
-					$background_colour = get_sub_field('background_colour');
-					$text_colour = get_sub_field('text_colour');
+					$section_background_colour = get_sub_field('section_background_colour');
+					
+	
+					//We use a repeater field here for each of the columns
+					if( have_rows('columns')){
+						
+						$style = '';
+						$style .= (!empty($section_background_colour)) ? 'background-color: ' . $section_background_colour .';' : '';
+						$html .= '<section style="' . $style . '" class="el-row small-padding-top-bottom-medium medium-padding-top-bottom-large content-section ' . $layout .'">';
+							
+							//display subtitle and title if we have it set
+							if(!empty($title) || !empty($subtitle)){
+								$html .= '<div class="el-row inner small-align-center small-margin-bottom-medium">';
+								if(!empty($title)){
+									$html .= '<h2 class="title">' . $title . '</h2>';
+								}
+								if(!empty($subtitle)){
+									$html .= '<div class="content">' . $subtitle . '</div>';
+								}
+								$html .= '</div>';
+							}
+							$html .= '<div class="el-row inner medium-row-of-two large-row-of-three ">';
+								while ( have_rows('columns')){
+									
+									$row = the_row();
+									
+									$image = get_sub_field('image');
+									$title = get_sub_field('title');
+									$content = get_sub_field('content');
+						
+									
+									//each column
+									$html .= '<div class="el-col-small-12 el-col-medium-6 el-col-large-4 small-align-center small-margin-bottom-medium">';
+										if(!empty($image)){
+											$url = wp_get_attachment_image_src($image, 'medium', false)[0]; 
+											$html .= '<img class="image small-margin-bottom-small" src="' . $url  .'"/>';
+										}
+										if(!empty($title)){
+											$html .= '<h3 class="title capitalize">' . $title . '</h3>';
+										}
+										if(!empty($content)){
+											$html .= '<div class="content">' . $content . '</div>';
+										}
+									$html .= '</div>';
+									
+								}
+							$html .= '</div>';
+						$html .= '</div>';
+						
+					}	
+				}
+								
+				
+				
+				
+				//full content section
+				//Used to display a full WYSIWYG editor 
+				else if($layout == 'full_content_section'){
+					
+					$content = get_sub_field('content');
+				
+					$html .= '<section class="el-row small-padding-top-bottom-medium medium-padding-top-bottom-x-large  content-section ' . $layout .'">';
+						$html .= '<div class="el-row inner">';
+						if(!empty($content)){
+							$html .= '<div class="el-col-small-12 small-padding-top-bottom-small content-section' . $layout . '">';
+								$html .= $content;
+							$html .= '</div>';
+						}
+						$html .= '</div>';
+					$html .= '</section>';
+					
+				}
+				///Inner content section
+				//Displays a title and WYSIWYG editor, but constrains it to the inner container with an optional background colour
+				else if($layout == 'inner_content_section'){
+					
+					$title = get_sub_field('title');
+					$content = get_sub_field('content');
+					$section_background_colour = get_sub_field('section_background_colour');
+					
+					
+					$html .= '<section class="el-row small-padding-top-bottom-medium medium-padding-top-bottom-x-large  content-section ' . $layout .'">';
+						$html .= '<div class="el-row inner">';
+						
+							$style = '';
+							$style .= (!empty($section_background_colour)) ? 'background-color: ' . $section_background_colour . ';' : '';
+							$html .= '<div style="' . $style . '" class="content-wrap el-col-small-12 small-padding-top-bottom-small">';
+								if(!empty($title)){
+									$html .= '<h3 class="title">' . $title . '</h3>';
+								}
+								if(!empty($content)){
+									$html .= '<div class="content">';
+										$html .= $content;
+									$html .= '</div>';
+								}
+							
+							$html .= '</div>';
+						
+						$html .= '</div>';
+					$html .= '</section>';
+					
+				}
+							
+				//Standard CTA Section
+				//Used to create a center aligned CTA element with optional 2 readmore buttons
+				else if($layout == 'standard_cta_section'){
+					
+					$title = get_sub_field('title');
+					$content = get_sub_field('content');
+					$use_large_text = get_sub_field('use_large_text');
+					$button_primary_text = get_sub_field('button_primary_text');
+					$button_primary_url = get_sub_field('button_primary_url');
+					$button_secondary_text = get_sub_field('button_secondary_text');
+					$button_secondary_url = get_sub_field('button_secondary_url');
+					$section_background_colour = get_sub_field('section_background_colour');
+					$section_background_image = get_sub_field('section_background_image');
+					
 					
 					$style = '';
-					$style .= !empty($background_colour) ? 'background-color: ' . $background_colour . '; ' : '';
-					$style .= !empty($text_colour) ? 'color: ' . $text_colour . '; ' : '';
-					$html .= '<div class="el-col-small-12 small-align-center small-padding-top-bottom-medium content-section ' . $layout . '" style="' . $style . '">';
-						if(!empty($title)){
-							$html .= '<h2 class="title">' . $title . '</h2>';
-						}
-						if(!empty($subtitle)){
-							$html .= '<div class="subtitle">' . $subtitle . '</div>';
+					$style .= !empty($section_background_colour) ? 'background-color: ' . $section_background_colour . '; ' : '';
+					$html .= '<section style="' . $style . '" class="el-row small-padding-top-bottom-medium medium-padding-top-bottom-x-large content-section ' . $layout . '">';
 						
+					
+						//background image
+						if(!empty($section_background_image)){
+							$html .= '<div class="section-background-image top-left">';
+								$url = wp_get_attachment_image_src($section_background_image, 'medium', false)[0]; 
+								$html .= '<div class="image" style="background-image:url(' . $url .');"></div>';
+							$html .= '</div>';
 						}
-		
-						//cta button
-						if(!empty($button_url_object)){
-							$resource_id = $button_url_object->ID;
-							$url = get_permalink($resource_id);
+						
+						$html .= '<div class="el-row inner">';
 							
-							$html .= '<a class="button primary-button" href="' . $url . '">' . $button_text  . '</a>';
-						}
-						
-					$html .= '</div>';
-					
-					
-				}
-				//Full width image section
-				else if($layout == 'full_width_image_section'){
-						
-					$image_id = get_sub_field('image'); 
+							$html .= '<div class="content-wrap el-col-small-12 el-col-medium-8 el-col-medium-offset-2">';
+								
+								if(!empty($title)){
+									$html .= '<h2 class="title small-align-center">' . $title . '</h2>';
+								}
+								if(!empty($content)){
+									$classes = '';
+									$classes .= ($use_large_text == 'yes') ? 'large-text' : '';
+									$html .= '<div class="content small-align-center ' . $classes .'">' . $content . '</div>';
+								}
 
-					if(!empty($image_id)){
-						$image = wp_get_attachment_image($image_id, 'large', false);
-						
-						$html .= '<div class="el-row small-margin-bottom-medium small-align-center content-section ' . $layout .' ">';
-							$html .= '<div class="el-col-small-12">';
-								$html .= $image;
+
+								//optional buttons
+								if(!empty($button_primary_url) || !empty($button_secondary_url)){
+										
+									$html .= '<div class="button-group small-align-center">';	
+										//primary button
+										if(!empty($button_primary_url)){
+											$html .= '<a href="' . get_permalink($button_primary_url) . '">';
+												$html .= '<div class="button featured-button">' . $button_primary_text . '</div>';
+											$html .= '</a>';
+										}
+										//secondary button
+										if(!empty($button_secondary_url)){					
+											$html .= '<a href="' . get_permalink($button_secondary_url) . '">';
+												$html .= '<div class="button secondary-button">' . $button_secondary_text . '</div>';
+											$html .= '</a>';
+										}
+									$html .= '</div>';
+								}
+								
+								
+
+							
 							$html .= '</div>';
+							
+			
+							
+							
 						$html .= '</div>';
-					}
-				}
-				//Half width image section
-				else if($layout == 'half_width_image_section'){
-						
-					$image_array = get_sub_field('image'); 
+					$html .= '</section>';
 					
-					if(!empty($image_array)){
-						$image = wp_get_attachment_image($image_array['ID'], 'large', false);
-						
-						$html .= '<div class="el-row small-margin-bottom-medium small-align-center content-section ' . $layout . '">';
-							$html .= '<div class="el-col-small-12 el-col-medium-6 el-col-medium-offset-3">';
-								$html .= $image;
-							$html .= '</div>';
-						$html .= '</div>';
-					}
+					
 				}
+				//Video Section
+				//Used to display an embedded video source such as youtube
+				else if($layout == 'video_section'){
+					
+					$iframe_embed = get_sub_field('iframe_embed');
+					
+					$html .= '<section class="el-row small-padding-top-bottom-medium medium-padding-top-bottom-x-large  content-section ' . $layout .'">';
+						$html .= '<div class="el-row inner">';
+						if(!empty($iframe_embed)){
+							$html .= '<div class="content-wrap el-col-small-12">';
+							
+								$html .= $iframe_embed;
+							
+							$html .= '</div>';
+						}
+						$html .= '</div>';
+					$html .= '</section>';
+					
+				}
+				//Service listing
+				//Shows a grid listing of our Services content type
+				else if($layout == 'service_listing'){
+					
+					//use our el_services object to get the markup we need
+					//inc/services/el_services.php
+					$args = array('style_type' => 'grid');
+					
+					$el_services = $this->get_services_object();
+					$html .= $el_services->get_servicess_listing($args);
+					
+				}
+				//Condition Listing
+				//Shows a grid listing of the Conditions content type
+				else if($layout == 'condition_listing'){
+					
+					$args = array('style_type' => 'grid');
+					$el_conditions = $this->get_conditions_object();
+					
+					$html .= $el_conditions->get_conditions_listing($args);
+				}
+				
+				
+				
+				// //Full width image section
+				// else if($layout == 'full_width_image_section'){
+// 						
+					// $image_id = get_sub_field('image'); 
+// 
+					// if(!empty($image_id)){
+						// $image = wp_get_attachment_image($image_id, 'large', false);
+// 						
+						// $html .= '<div class="el-row small-margin-bottom-medium small-align-center content-section ' . $layout .' ">';
+							// $html .= '<div class="el-col-small-12">';
+								// $html .= $image;
+							// $html .= '</div>';
+						// $html .= '</div>';
+					// }
+				// }
+				// //Half width image section
+				// else if($layout == 'half_width_image_section'){
+// 						
+					// $image_array = get_sub_field('image'); 
+// 					
+					// if(!empty($image_array)){
+						// $image = wp_get_attachment_image($image_array['ID'], 'large', false);
+// 						
+						// $html .= '<div class="el-row small-margin-bottom-medium small-align-center content-section ' . $layout . '">';
+							// $html .= '<div class="el-col-small-12 el-col-medium-6 el-col-medium-offset-3">';
+								// $html .= $image;
+							// $html .= '</div>';
+						// $html .= '</div>';
+					// }
+				// }
+				
 				
 				
 			}	
 		}
-		
+	
 		return $html;
 				
 	} 
@@ -700,139 +1043,127 @@
 	}
 	
 	/**
-	 * Displays either the default header banner set in the theme customizer or a customized version 
-	 * that's dictated on a page by page approach. 
+	 * Displays either the default header banner set in the theme customizer. Used to display the page title and associated elements
 	 */
 	public static function el_display_header_banner($object){
 		
 		$instance = self::getInstance();
 		$html = '';
+
+		$el_header_banner_background_image = get_theme_mod('el_header_banner_background_image');
+		$el_header_banner_featured_image = get_theme_mod('el_header_banner_featured_image');
+		$el_header_banner_overlay_colour = get_theme_mod('el_header_banner_overlay_colour');
+		$el_header_banner_text_colour = get_theme_mod('el_header_banner_text_colour');
+		$el_header_banner_title = get_theme_mod('el_header_banner_title');
+		$el_header_banner_subtitle = get_theme_mod('el_header_banner_subtitle');
+		$el_header_banner_primary_button_text = get_theme_mod('el_header_banner_primary_button_text');
+		$el_header_banner_primary_button_url = get_theme_mod('el_header_banner_primary_button_url');
+		$el_header_banner_secondary_button_text = get_theme_mod('el_header_banner_secondary_button_text');
+		$el_header_banner_secondary_button_url = get_theme_mod('el_header_banner_secondary_button_url');
+
 		
-		$post_types = array('post', 'page', 'products');
-		$display_custom_banner = false;
 		
-		//object is a post, not term or misc
-		if($object instanceof WP_Post){
+		
 			
-			$post_type = get_post_type($object->ID);
-			
-			//on applicable post type
-			if(in_array($post_type, $post_types)){
-				
-				$el_header_banner_enabled = get_post_meta($object->ID, 'el_header_banner_enabled', true);		
-				//opted to override CTA
-				if($el_header_banner_enabled == 'yes'){
-					$display_custom_banner = true;
-				}
+		$style = '';
+		$style .= (!empty($el_header_banner_background_image)) ? 'background-image: url(' . $el_header_banner_background_image . '); ' : '';
+		
+		$html .= '<section class="header-banner el-row">';
+
+			//background image
+			if(!empty($el_header_banner_background_image)){
+				$html .= '<div class="background-image" style="background-image:url(' . $el_header_banner_background_image . ');"></div>';
 			}
 			
-		}
-		
-	
-		
-		//overriden banner on page level
-		if($display_custom_banner == true){
+			//overlay
+			if(!empty($el_header_banner_overlay_colour)){
+				$html .= '<div class="overlay" style="background-color: ' . $el_header_banner_overlay_colour .';"></div>';
+			}
 			
+			//main content
+			$style = '';
+			$style .= !empty($el_header_banner_text_colour) ? 'color: ' . $el_header_banner_text_colour . '; ' : '';
 			
-			$el_header_banner_background_image = get_post_meta($object->ID, 'el_header_banner_background_image', true);
-			$el_header_banner_overlay_colour = get_post_meta($object->ID, 'el_header_banner_overlay_colour', true);
-			$el_header_banner_text_colour = get_post_meta($object->ID, 'el_header_banner_text_colour', true);
-			$el_header_banner_title = get_post_meta($object->ID, 'el_header_banner_title', true);
-			$el_header_banner_subtitle = get_post_meta($object->ID, 'el_header_banner_subtitle', true);
-			$el_post_title = apply_filters('post_title', $object->post_title);
-			
-			
-			
-			
-			$html .= '<section class="header-banner el-row small-align-center">';
-
-				//background image
-				$style = '';
-				if(!empty($el_header_banner_background_image)){
-					$url = wp_get_attachment_image_src($el_header_banner_background_image, 'large', false)[0];
-					$style .= 'background-image: url(' . $url . ');';
-					$html .= '<div class="background-image" style="background-image:url(' . $url . ');"></div>';
-				}
+			$html .= '<div class="content-wrap" style="' . $style . '">';	
 				
-				//overlay
-				if(!empty($el_header_banner_overlay_colour)){
-					$html .= '<div class="overlay" style="background-color: ' . $el_header_banner_overlay_colour .';"></div>';
-				}
+				$html .= '<div class="el-row inner small-padding-top-bottom-large medium-padding-top-bottom-xx-large">';
 				
-				//main content
-				$style = '';
-				$style .= !empty($el_header_banner_text_colour) ? 'color: ' . $el_header_banner_text_colour . '; ' : '';
-				$html .= '<div class="content el-col-small-12" style="' . $style . '">';	
-					$html .= '<div class="el-row inner small-padding-top-bottom-large medium-padding-top-bottom-xx-large">';
-						//use the post title if we dont have a custom title set
-						if(!empty($el_header_banner_title)){
-							$html .= '<h1 class="title">' . $el_header_banner_title . '</h1>';
-						}else{
-							$html .= '<h1 class="title">' . $el_post_title . '</h1>';
-						}
-						if(!empty($el_header_banner_subtitle)){
-							$html .= '<p class="subtitle">' . $el_header_banner_subtitle . '</p>';
-						}
-						//featured image badge
-						if(!empty($el_header_banner_featured_image)){
-							$html .= '<div class="badge" style="background-image:url(' . $el_header_banner_featured_image . ');"></div>';	
-						}
-					$html .= '</div>';
-				$html .= '</div>';
-			$html .= '</section>';
-			
-			
-		}
-		//display customizer version
-		else{
-			
-			$el_header_banner_enabled = get_theme_mod('el_header_banner_enabled');
-			$el_header_banner_background_image = get_theme_mod('el_header_banner_background_image');
-			$el_header_banner_featured_image = get_theme_mod('el_header_banner_featured_image');
-			$el_header_banner_overlay_colour = get_theme_mod('el_header_banner_overlay_colour');
-			$el_header_banner_text_colour = get_theme_mod('el_header_banner_text_colour');
-			$el_header_banner_title = get_theme_mod('el_header_banner_title');
-			$el_header_banner_subtitle = get_theme_mod('el_header_banner_subtitle');
-			
-			//if we want it displayed 
-			if($el_header_banner_enabled){
-				
-				$style = '';
-				$style .= (!empty($el_header_banner_background_image)) ? 'background-image: url(' . $el_header_banner_background_image . '); ' : '';
-				
-				$html .= '<section class="header-banner el-row small-align-center">';
-
-					//background image
-					if(!empty($el_header_banner_background_image)){
-						$html .= '<div class="background-image" style="background-image:url(' . $el_header_banner_background_image . ');"></div>';
-					}
-					
-					//overlay
-					if(!empty($el_header_banner_overlay_colour)){
-						$html .= '<div class="overlay" style="background-color: ' . $el_header_banner_overlay_colour .';"></div>';
-					}
-					
 					//main content
-					$style = '';
-					$style .= !empty($el_header_banner_text_colour) ? 'color: ' . $el_header_banner_text_colour . '; ' : '';
-					$html .= '<div class="content el-col-small-12" style="' . $style . '">';	
-						$html .= '<div class="el-row inner small-padding-top-bottom-large medium-padding-top-bottom-xx-large">';
+					$html .= '<div class="content el-col-small-12 small-align-center el-col-large-8 el-col-large-offset-4 large-align-right">';
+						
+						//on homepage
+						if(is_front_page()){
+							//Title
 							if(!empty($el_header_banner_title)){
-								$html .= '<h1 class="title">' . $el_header_banner_title . '</h1>';
+								$html .= '<h1 class="hero-title small-margin-bottom-medium">';
+								//manipulate the wording used in the title
+								$words = explode(" ", $el_header_banner_title);
+								foreach($words as $word){
+									$html .= '<span>' . $word . '</span>';
+								}
+								$html .= '</h1>';
 							}
+							//subtitle
 							if(!empty($el_header_banner_subtitle)){
-								$html .= '<p class="subtitle">' . $el_header_banner_subtitle . '</p>';
+								$html .= '<p class="hero-subtitle">' . $el_header_banner_subtitle . '</p>';
 							}
-							//featured image badge
-							if(!empty($el_header_banner_featured_image)){
-								$html .= '<div class="badge" style="background-image:url(' . $el_header_banner_featured_image . ');"></div>';	
+							//groups of buttons
+							if(!empty($el_header_banner_primary_button_url) || !empty($el_header_banner_secondary_button_url)){
+								$html .= '<div class="button-group">';
+								//primary button
+								if(!empty($el_header_banner_primary_button_url)){
+									$html .= '<a href="' . $el_header_banner_primary_button_url . '">';
+										$html .= '<div class="button primary-button">' . $el_header_banner_primary_button_text  . '</div>';
+									$html .= '</a>';
+								}
+								//secondary button
+								if(!empty($el_header_banner_secondary_button_url)){
+									$html .= '<a href="' . $el_header_banner_secondary_button_url . '">';
+										$html .= '<div class="button secondary-button">' . $el_header_banner_secondary_button_text  . '</div>';
+									$html .= '</a>';
+								}
+								$html .= '</div>';
 							}
-						$html .= '</div>';
+							
+						}
+						//everywhere else
+						else{
+							
+							//Determine what type of object we're looking at
+							if($object instanceof WP_Post){
+								
+								//if we're on a page
+								if(get_post_type($object) == 'page'){
+									$parent_post_id = wp_get_post_parent_id($object->ID); 
+									if($parent_post_id){
+										$parent_post = get_post($parent_post_id);
+										$html .= '<div class="h2 small-align-center large-align-right">' . $parent_post->post_title . '</div>';
+									}
+								}else if(get_post_type($object == 'services')){
+									$html .= '<div class="h2 small-align-center large-align-right">Services</div>';
+								}else if(get_post_type($object == 'conditions')){
+									$html .= '<div class="h2 small-align-center large-align-right">Conditions</div>';
+								}
+								
+								$post_title = $object->post_title;
+							$html .= '<h1 class="title">' . $post_title . '</h1>'; 
+							}
+							
+							
+							
+						}
+						
+	
+						
 					$html .= '</div>';
-				$html .= '</section>';
-			}
+					
+					
+				$html .= '</div>';
+			$html .= '</div>';
+		$html .= '</section>';
 			
-		}
+			
+		
 		
 		
 			
@@ -1164,14 +1495,8 @@
 		//get all footer widgets 
 		for($i = 1; $i <= $instance->number_of_footer_widgets; $i++){
 			
-			//last widgets are bigger
-			$class = '';
-			if($i == $instance->number_of_footer_widgets){
-				$class = ' el-col-medium-3';
-			}else{
-				$class = ' el-col-medium-2';
-			}
-			$html .= '<div class="widget-area el-col-small-12 ' . $class . '">';
+			
+			$html .= '<div class="widget-area el-col-small-12 el-col-medium-4 el-col-large-2">';
 			
 			ob_start();
 			dynamic_sidebar('footer-sidebar-' . $i);
@@ -1206,7 +1531,7 @@
 	
 	
  }
- $ycc_theme = ycc_theme::getInstance();
+ $theme_base = theme_base::getInstance();
  
  
  
@@ -1927,11 +2252,10 @@ function ycc_setup() {
 	 */
 	add_theme_support( 'post-thumbnails' );
 
-	// This theme uses wp_nav_menu() in one location.
+	
 	register_nav_menus( array(
-		'right-menu' 	=> esc_html__( 'Right Main Menu', 'ycc' ),
-		'left-menu' 	=> esc_html__('Left Main Menu', 'ycc'),
-		'mobile-menu' 	=> esc_html__('Mobile Menu', 'ycc')
+		'main-menu' 	=> esc_html__( 'Main Menu', 'perfectvision' ),
+		'mobile-menu' 	=> esc_html__('Mobile Menu', 'perfectvision')
 	) );
 	
 	

@@ -23,35 +23,84 @@
 	clear: both;
 }
 
+//Used to add box-shadows to elements, used on card layouts
+@mixin box-shadow(){
+  box-shadow: 0px 0px 60px -12px rgba(50,50,50, 0.35);
+}
+
 
 //Generic styling applied to buttons and certain form elements
-@mixin button-styling(){
-  border-radius: 0px;
-  padding: 14px 28px;
-  font-size: 1rem;
+@mixin button-styling($type: 'primary', $size: 'regular'){
+  
   display: inline-block;
   text-transform: uppercase;
-  background-color: $color__blue_normal;
-  color: $color__white;
-  border: 0px;
+  font-weight: $font__weight-semi-bold;
   @include simple-transition;
+  border: 0px;
   
-  //hover, show blue
-  &:hover,
-  &:active,
-  &:focus{
-    background-color: $color__blue_dark;
-    color: $color__white;
+  //diffferent size buttons
+  @if $size == 'regular'{
+    @include font-size(1);
+    padding: 17px 32px;
+    border-radius: 5px;
+    
   }
+  @else if $size == 'small'{
+    
+    @include font-size(0.9);
+    padding: 12px 25px;
+    text-transform: none;
+    border-radius: 3px;
+    
+  }
+  
+  
+  //different styles of buttons
+  @if $type == 'primary'{
+    
+    background-color: $color__white;
+    color: $color__green_regular;
+    border: solid 2px $color__green_regular;
+   
+  }@else if $type == 'secondary'{ 
+    
+    color: $color__white;
+    background-color: $color__green_regular;
+    border: solid 2px $color__green_dark;
+    
+    &:hover,
+    &:active,
+    &:focus{
+      background-color: $color__green_dark;
+    }
+    
+  }@else if $type == 'featured'{
+    
+    background-color: $color__orange_regular;
+    color: $color__white;
+    border: solid 2px $color__orange_regular;
+    
+    &:hover,
+    &:active,
+    &:focus{
+      background-color: $color__orange_dark;
+      border: solid 2px $color__orange_regular;
+    }
+    
+  }
+  
+  
+  
+  
 }
 
 
 //Applies a simple transition for all
 @mixin simple-transition(){
-  -webkit-transition: all 250ms ease;
-  -moz-transition: all 250ms ease;
-  -ms-transition: all 250ms ease;
-  transition: all 250ms ease;
+  -webkit-transition: all 250ms ease-in;
+  -moz-transition: all 250ms ease-in;
+  -ms-transition: all 250ms ease-in;
+  transition: all 250ms ease-in;
 }
 
 /**
@@ -59,19 +108,19 @@
  */
 @mixin input-placeholder-styles(){
   &::-webkit-input-placeholder {
-      color: $color__gray !important;
+      color: $color__gray_light !important;
   }
   
   &:-moz-placeholder { /* Firefox 18- */
-     color: $color__gray !important;
+     color: $color__gray_light !important;
   }
   
   &::-moz-placeholder {  /* Firefox 19+ */
-     color: $color__gray !important;
+     color: $color__gray_light !important;
   }
   
   &:-ms-input-placeholder {  
-     color: $color__gray !important;
+     color: $color__gray_light !important;
   }
   
 }

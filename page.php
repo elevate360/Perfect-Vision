@@ -12,7 +12,7 @@
  * @package ycc
  */
 
-$ycc_theme = ycc_theme::getInstance();
+$theme_base = theme_base::getInstance();
 get_header(); ?>
 
 	<div id="primary" class="content-area">
@@ -22,7 +22,7 @@ get_header(); ?>
 			while ( have_posts() ) : the_post();
 				
 				//render the ACC page templates
-				$ycc_theme->display_page_templates($post->ID);
+				$theme_base->display_page_templates($post->ID);
 				//get_template_part( 'template-parts/content', 'page' );
 
 				// If comments are open or we have at least one comment, load up the comment template.
