@@ -26,6 +26,7 @@
 		$this->load_services_content_type();
 		$this->load_faq_content_type();
 		$this->load_conditions_content_type();
+		$this->load_locations_content_type();
 	
 		add_action('wp_enqueue_scripts', array($this, 'enqueue_public_scripts_and_styles'));
 		add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts_and_styles'));
@@ -45,6 +46,8 @@
 		add_action('el_display_header_cta', array($this, 'el_display_header_cta'), 10, 1); 
 		add_action('el_display_header_banner', array($this, 'el_display_header_banner'));
 		add_action('el_display_footer_cta', array($this, 'el_display_footer_cta'));
+		
+		add_action('el_display_post_card_listing', array($this, 'display_post_card_listing')); 
 	}
 	
 	/**
@@ -87,6 +90,151 @@
 		}
 		
 	}
+
+	/**
+	 * Displays a listing of the latest blogs in card format for template in templates
+	 */
+	public function display_post_card_listing(){
+		
+		$html = '';
+		
+		$html .= '<div class="blog-card-listing el-row inner medium-row-of-three small-padding-top-bottom-medium medium-padding-top-bottom-large">';
+			$html .= $this->get_post_card_listing();
+		$html .= '</div>';
+		echo $html;
+	}
+	
+	/**
+	 * Gets a listing of a 3x2 grid of post cards
+	 * 
+	 */
+	public function get_post_card_listing(){
+		
+		$html = '';
+		
+		$post_args = array(
+			'post_type'		=> 'post',
+			'post_status'	=> 'publish',
+			'posts_per_page'=> 6
+		);
+		$posts = get_posts($post_args);
+		if($posts){
+			foreach($posts as $post){
+				$html .= $this->get_single_post_card_html($post->ID);
+			}
+		}
+		
+		return $html;
+	}
+
+	/**
+	 * gets the single HTMLL markup for a single post in our card format
+	 */
+	public static function get_single_post_card_html($post_id){
+		
+		
+		
+		$instance = self::getInstance();
+	
+		$html = '';
+	
+		$post = get_post($post_id);
+		if($post){
+			$post_id = $post->ID;
+			$post_title = $post->post_title; 
+			$post_content = $post->post_content;
+			$post_excerpt = $post->post_excerpt;
+			$post_permalink = get_permalink($post_id);
+			$post_url = get_permalink($post_id);
+			$post_thumbnail_id = get_post_thumbnail_id($post_id);
+			$post_date = get_the_date('M d, Y', $post_id);
+			$post_author_id = $post->post_author;
+			$post_author = get_user_by('ID', $post_author_id);
+			
+			//echo '<pre>';
+			//var_dump($post_author);
+			//echo '</pre>';
+			
+			
+			$post_description = '';
+			if(!empty($post_excerpt)){
+				$post_description = $post_excerpt;
+			}else{
+				if(!empty($post_content)){
+					$post_description = wp_trim_words($post_content, 25, '..');
+				}
+			}
+			
+			//Output
+			$html .= '<article class="blog-card el-col-small-12 el-col-medium-6 el-col-large-4">';
+				
+				
+				$html .= '<div class="hero-card outer-wrap small-margin-bottom-medium">';
+					//Image section + title
+					$html .= '<div class="header-wrap small-margin-bottom-medium">';
+						$html .= '<a href="' . $post_url .'" title="' . __($post_title,'perfectvision')  . '">';
+							//Image
+							if(!empty($post_thumbnail_id)){
+								$url = wp_get_attachment_image_src($post_thumbnail_id, 'medium', false)[0];
+								$html .= '<div class="image" style="background-image:url(' . $url . ');"></div>';
+								$html .= '<div class="image-overlay"></div>';
+							}
+							//title
+							if(!empty($post_title)){
+								$html .= '<h2 class="title">' . $post_title . '</h2>';
+							}	
+							
+							//posted date
+							$html .= '<div class="posted-on">';
+								$html .= $post_date;
+							$html .= '</div>';
+							
+						$html .= '</a>';
+						
+						
+					$html .= '</div>';
+					
+					//main content
+					$html .= '<div class="content-wrap small-margin-bottom-medium">';
+					if(!empty($post_description)){
+						$html .= '<div class="content">' . $post_description . '</div>';
+					}
+					$html .= '</div>';
+					
+					//additionals
+					$html .= '<div class="footer-wrap el-row small-align-center">';
+					
+						//author link
+						$html .= '<div class="author el-col-small-12 el-col-medium-6 collapse">';
+							$html .= '<a class="small-padding-top-bottom-small" href="' . get_author_posts_url($post_author_id) . '">';
+								$html .= '<span class="name">' . $post_author->display_name . '</span>';
+							$html .= '</a>';
+						$html .= '</div>';
+						
+						//post link
+						$html .= '<div class="post-link el-col-small-12 el-col-medium-6 collapse">';
+							$html .= '<a class="small-padding-top-bottom-small" href="' . $post_permalink . '">Read More</a>';
+						$html .= '</div>';
+						
+					$html .= '</div>';
+				$html .= '</div>';
+				
+				//edit link for admins
+				if(current_user_can('edit_posts')){
+					$url = get_edit_post_link($post_id); 
+					$html .= '<div class="el-row small-align-center small-margin-top-bottom-small">';
+						$html .= '<a class="button primary-button small" href="' . $url .'" title="edit">Edit</a>';
+					$html .= '</div>';
+				}
+				
+				
+			$html .= '</article>';
+		}
+	
+	
+		return $html;
+	}
+
 
 	/**
 	 * Render function for displaying our post metaboxes
@@ -252,7 +400,7 @@
 	 */
 	public function remove_content_from_post_types(){
 		
-		$post_types = array('post','page');
+		$post_types = array('post','page','conditions','services');
 		
 		foreach($post_types as $post_type){
 			remove_post_type_support($post_type, 'editor');
@@ -325,6 +473,14 @@
 	}
 	
 	/**
+	 * Loads the locations content type
+	 */
+	public function load_locations_content_type(){
+		require get_template_directory() . '/inc/locations/el_locations.php';
+		$el_locations = $this->get_locations_object();
+	}
+	
+	/**
 	 * Loads the product content type for use
 	 * 
 	 * Loads the products file located in '/inc/services/el_services.php'
@@ -383,6 +539,19 @@
 		$result = false;
 		if(class_exists('el_conditions')){
 			$result = el_conditions::getInstance();
+		}
+		return $result;
+	}
+	
+	/**
+	 * Gets the 'el_locations' object instance
+	 * 
+	 * Accessed specific functions inside that object
+	 */
+	public function get_locations_object(){
+		$result = false;
+		if(class_exists('el_locations')){
+			$result = el_locations::getInstance();
 		}
 		return $result;
 	}
@@ -608,7 +777,7 @@
 						
 						$html .= '<div class="el-row inner">';
 						
-							$html .= '<div class="hero-card icon el-col-small-12 el-col-medium-8 el-col-medium-offset-2">';
+							$html .= '<div class="hero-card hero-icon el-col-small-12">';
 								
 								//icon
 								$html .= '<div class="icon"></div>';
@@ -733,9 +902,9 @@
 							$html .= '</div>';
 						}
 						
-						$html .= '<div class="el-row inner">';
+						$html .= '<div class="el-row inner relative">';
 						
-							$html .= '<div class="content-wrap el-col-small-12 el-col-medium-8 el-col-medium-offset-2">';
+							$html .= '<div class="content-wrap el-col-small-12">';
 							
 								if(!empty($title)){
 									//adjust title based on which section it's used in	
@@ -900,9 +1069,9 @@
 							$html .= '</div>';
 						}
 						
-						$html .= '<div class="el-row inner">';
+						$html .= '<div class="el-row inner relative">';
 							
-							$html .= '<div class="content-wrap el-col-small-12 el-col-medium-8 el-col-medium-offset-2">';
+							$html .= '<div class="content-wrap el-col-small-12">';
 								
 								if(!empty($title)){
 									$html .= '<h2 class="title small-align-center">' . $title . '</h2>';
@@ -919,13 +1088,13 @@
 										
 									$html .= '<div class="button-group small-align-center">';	
 										//primary button
-										if(!empty($button_primary_url)){
+										if(!empty($button_primary_url) && !empty($button_primary_text)){
 											$html .= '<a href="' . get_permalink($button_primary_url) . '">';
 												$html .= '<div class="button featured-button">' . $button_primary_text . '</div>';
 											$html .= '</a>';
 										}
 										//secondary button
-										if(!empty($button_secondary_url)){					
+										if(!empty($button_secondary_url) && !empty($button_secondary_text)){					
 											$html .= '<a href="' . get_permalink($button_secondary_url) . '">';
 												$html .= '<div class="button secondary-button">' . $button_secondary_text . '</div>';
 											$html .= '</a>';
@@ -954,13 +1123,11 @@
 					
 					$html .= '<section class="el-row small-padding-top-bottom-medium medium-padding-top-bottom-x-large  content-section ' . $layout .'">';
 						$html .= '<div class="el-row inner">';
-						if(!empty($iframe_embed)){
-							$html .= '<div class="content-wrap el-col-small-12">';
-							
+							$html .= '<div class="video-wrap el-col-small-12 small-aspect-16-9">';
+							if(!empty($iframe_embed)){
 								$html .= $iframe_embed;
-							
+							}
 							$html .= '</div>';
-						}
 						$html .= '</div>';
 					$html .= '</section>';
 					
@@ -986,39 +1153,75 @@
 					
 					$html .= $el_conditions->get_conditions_listing($args);
 				}
+				//Blog Listing
+				//Shows a grid of upcoming blog articles
+				else if($layout == 'blog_listing'){
+					
+					$html .= '<section class="blog-card-listing el-row inner medium-row-of-two large-row-of-three small-padding-top-bottom-medium medium-padding-top-bottom-large">';
+						$html .= $this->get_post_card_listing();
+					$html .= '</section>';
+					
+				}
+				//Location Listing
+				//shows a listing of locations
+				else if($layout == 'locations_listing'){
+					
+					$args = array('style_type' => 'grid');
+					
+					//collect args from template
+					$locations_to_display = get_sub_field('locations_to_display');
+					if(!empty($locations_to_display)){
+						$args['include'] = $locations_to_display;
+					}
+					
+					
+					
+					$el_locations = $this->get_locations_object();
+					$html .= $el_locations->get_locations_listing($args); 
+					
+				}
+				
+				//faq_listing
+				else if($layout == 'faq_listing'){
+					
+					//use our el_faq object to get our markup
+					//inc/faq/faq.php
+					$el_faq = $this->get_faq_object();
+					$html .= $el_faq->get_faq_html();
+				}
 				
 				
 				
 				// //Full width image section
-				// else if($layout == 'full_width_image_section'){
-// 						
-					// $image_id = get_sub_field('image'); 
-// 
-					// if(!empty($image_id)){
-						// $image = wp_get_attachment_image($image_id, 'large', false);
-// 						
-						// $html .= '<div class="el-row small-margin-bottom-medium small-align-center content-section ' . $layout .' ">';
-							// $html .= '<div class="el-col-small-12">';
-								// $html .= $image;
-							// $html .= '</div>';
-						// $html .= '</div>';
-					// }
-				// }
-				// //Half width image section
-				// else if($layout == 'half_width_image_section'){
-// 						
-					// $image_array = get_sub_field('image'); 
-// 					
-					// if(!empty($image_array)){
-						// $image = wp_get_attachment_image($image_array['ID'], 'large', false);
-// 						
-						// $html .= '<div class="el-row small-margin-bottom-medium small-align-center content-section ' . $layout . '">';
-							// $html .= '<div class="el-col-small-12 el-col-medium-6 el-col-medium-offset-3">';
-								// $html .= $image;
-							// $html .= '</div>';
-						// $html .= '</div>';
-					// }
-				// }
+				else if($layout == 'full_width_image_section'){
+						
+					$image_id = get_sub_field('image'); 
+
+					if(!empty($image_id)){
+						$image = wp_get_attachment_image($image_id, 'large', false);
+						
+						$html .= '<section class="el-row inner small-margin-bottom-medium small-align-center content-section ' . $layout .' ">';
+							$html .= '<div class="el-col-small-12">';
+								$html .= $image;
+							$html .= '</div>';
+						$html .= '</section>';
+					}
+				}
+				//Half width image section
+				else if($layout == 'half_width_image_section'){
+						
+					$image_array = get_sub_field('image'); 
+					
+					if(!empty($image_array)){
+						$image = wp_get_attachment_image($image_array['ID'], 'large', false);
+						
+						$html .= '<section class="el-row inner small-margin-bottom-medium small-align-center content-section ' . $layout . '">';
+							$html .= '<div class="el-col-small-12 el-col-medium-6 el-col-medium-offset-3">';
+								$html .= $image;
+							$html .= '</div>';
+						$html .= '</section>';
+					}
+				}
 				
 				
 				
@@ -1139,14 +1342,32 @@
 										$parent_post = get_post($parent_post_id);
 										$html .= '<div class="h2 small-align-center large-align-right">' . $parent_post->post_title . '</div>';
 									}
-								}else if(get_post_type($object == 'services')){
+								}else if(get_post_type($object) == 'services'){
 									$html .= '<div class="h2 small-align-center large-align-right">Services</div>';
-								}else if(get_post_type($object == 'conditions')){
+								}else if(get_post_type($object) == 'conditions'){
+						
 									$html .= '<div class="h2 small-align-center large-align-right">Conditions</div>';
 								}
-								
+								//main title
 								$post_title = $object->post_title;
-							$html .= '<h1 class="title">' . $post_title . '</h1>'; 
+								$html .= '<h1 class="title">' . $post_title . '</h1>'; 
+							}
+							//Term
+							else if($object instanceof WP_Term){
+								//var_dump($object);
+								
+								$taxonomy = get_taxonomy($object->taxonomy);
+								$taxonomy_name = $taxonomy->label;
+								$term_name = $object->name;
+								
+								$html .= '<div class="h2 small-align-center large-align-right">' . $taxonomy_name . '</div>';
+								$html .= '<h1 class="title">' . $term_name . '</h1>'; 
+								
+								
+							}else if($object instanceof WP_User){
+								$title = $object->display_name;
+								$html .= '<div class="h2 small-align-center large-align-right">' . __('Author','perfectvision') . '</div>';
+								$html .= '<h1 class="title">' . $title . '</h1>'; 
 							}
 							
 							

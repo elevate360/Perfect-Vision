@@ -6,6 +6,11 @@ jQuery(document).ready(function($){
 		$('.menu.mobile-menu').toggleClass('active');
 		$('.mobile-background').toggleClass('active');
 		
+		//close any sub-menus that might be open
+		setTimeout(function(){
+			$('.menu.mobile-menu').find('.sub-menu').hide();	
+		}, 500);
+		
 	});
 
 	//clicking mobile menu background
@@ -30,5 +35,18 @@ jQuery(document).ready(function($){
 		
 		console.log(header_offset);
 	});
+
+	//Clicking on the sub-menu to toggle menus
+	$('.submenu-toggle').on('click', function(e){
+		
+		e.preventDefault();
+		
+		$(this).toggleClass('active');
+		var submenu = $(this).closest('li').find('.sub-menu');
+		
+		submenu.slideToggle('fast');
+	});
+	
+	
 
 }); 

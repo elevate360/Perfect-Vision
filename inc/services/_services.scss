@@ -18,10 +18,14 @@
         padding: 15px;
       }
       .image-wrap{
-        min-height: 70px;
+        display: flex;
+        min-height:100px;
+        align-content: center;
+        justify-content: center;
         
         .image{
-         
+          align-self: center;
+          display: inline-block;
         }
       }
         
@@ -38,8 +42,7 @@
       .image-wrap{
         position: relative;
         
-        .image{
-         
+        .image{  
           padding: 15px;
         } 
       } 

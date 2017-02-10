@@ -82,7 +82,7 @@
 
 		$posts = get_posts($post_args);
 		if($posts){
-			$html .= '<div class="faq-listing el-row">';
+			$html .= '<div class="faq-listing el-row inner small-margin-top-bottom-medium">';
 			foreach($posts as $post){
 				$post_id = $post->ID;
 				$post_title = $post->post_title; 
@@ -95,6 +95,13 @@
 					$html .= '<h3 class="question"> Q: ' . $post_title . '</h3>';
 					if(!empty($post_content)){
 						$html .= '<div class="answer small-padding-top-bottom-small el-col-small-12">' . $post_content . '</div>';
+					}
+					//edit link for admins
+					if(current_user_can('edit_posts')){
+						$url = get_edit_post_link($post_id); 
+						$html .= '<div class="el-row small-align-left small-margin-top-bottom-small">';
+							$html .= '<a class="button primary-button small" href="' . $url .'" title="edit">Edit</a>';
+						$html .= '</div>';
 					}
 					
 				$html .= '</div>';

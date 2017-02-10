@@ -1,0 +1,45 @@
+/**
+ *   Location specific styling
+ */
+
+
+.location-listing{
+  
+  .location{
+    
+    .contact-info{
+      
+      .section{
+        @include font-size(1.3);
+        border-top: dashed 2px $color__gray-light;
+        
+        &.phone .icon{
+          background-image: url('img/icon-call.png');
+        }
+        &.email .icon{
+           background-image: url('img/icon-mail.png');
+        }
+        &.location .icon{
+           background-image: url('img/icon-location.png');
+        }
+        
+        &:last-of-type{
+           border-bottom: dashed 2px $color__gray-light;
+        }
+        
+      }
+      .icon{
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+        width: 40px;
+        height: 40px;
+        display: inline-block;
+      }
+      
+    }
+    
+  }
+  
+  
+}

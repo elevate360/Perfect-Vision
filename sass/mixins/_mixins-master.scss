@@ -30,30 +30,14 @@
 
 
 //Generic styling applied to buttons and certain form elements
-@mixin button-styling($type: 'primary', $size: 'regular'){
+@mixin button-styling($type: 'primary'){
   
   display: inline-block;
   text-transform: uppercase;
   font-weight: $font__weight-semi-bold;
   @include simple-transition;
   border: 0px;
-  
-  //diffferent size buttons
-  @if $size == 'regular'{
-    @include font-size(1);
-    padding: 17px 32px;
-    border-radius: 5px;
-    
-  }
-  @else if $size == 'small'{
-    
-    @include font-size(0.9);
-    padding: 12px 25px;
-    text-transform: none;
-    border-radius: 3px;
-    
-  }
-  
+
   
   //different styles of buttons
   @if $type == 'primary'{
@@ -61,8 +45,16 @@
     background-color: $color__white;
     color: $color__green_regular;
     border: solid 2px $color__green_regular;
-   
-  }@else if $type == 'secondary'{ 
+    
+    &:hover,
+    &:active,
+    &:focus{
+      background-color: transparent;
+    }
+
+  }
+  //secondary green button
+  @else if $type == 'secondary'{ 
     
     color: $color__white;
     background-color: $color__green_regular;
@@ -74,7 +66,9 @@
       background-color: $color__green_dark;
     }
     
-  }@else if $type == 'featured'{
+  }
+  //featured orange button
+  @else if $type == 'featured'{
     
     background-color: $color__orange_regular;
     color: $color__white;
@@ -88,11 +82,34 @@
     }
     
   }
-  
-  
+
+}
+//Mixin to determine sizing for buttons
+@mixin button-sizing( $size: 'regular'){
+    
+  //diffferent size buttons
+  @if($size == 'large'){
+    @include font-size(1.2);
+    padding: 25px 45px;
+    border-radius: 8px;
+  }
+  @else if $size == 'regular'{
+    @include font-size(1);
+    padding: 17px 32px;
+    border-radius: 5px;
+  }
+  @else if $size == 'small'{
+    
+    @include font-size(0.9);
+    padding: 12px 25px;
+    text-transform: none;
+    border-radius: 3px;
+    
+  }
   
   
 }
+
 
 
 //Applies a simple transition for all

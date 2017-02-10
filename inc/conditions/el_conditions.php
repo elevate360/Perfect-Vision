@@ -205,6 +205,13 @@ class el_conditions extends el_content_type{
 									$html .= '</a>';
 								$html .= '</div>';
 							}
+							//edit link for admins
+							if(current_user_can('edit_posts')){
+								$url = get_edit_post_link($post_id); 
+								$html .= '<div class="el-row small-align-center small-margin-top-bottom-small">';
+									$html .= '<a class="button primary-button small" href="' . $url .'" title="edit">Edit</a>';
+								$html .= '</div>';
+							}
 							
 						$html .= '</div>';
 					$html .= '</div>';

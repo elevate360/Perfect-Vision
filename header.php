@@ -12,13 +12,7 @@
 ?><!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 <head>
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-NHM9BVH');</script>
-<!-- End Google Tag Manager -->
+
 <meta charset="<?php bloginfo( 'charset' ); ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="profile" href="http://gmpg.org/xfn/11">
@@ -34,7 +28,7 @@ $theme_base = theme_base::getInstance();
 ?>
 </head>
 
-<body <?php body_class('debug'); ?>>
+<body <?php body_class(''); ?>>
 <div id="page" class="site">
 	<a class="skip-link screen-reader-text" href="#content"><?php esc_html_e( 'Skip to content', 'ycc' ); ?></a>
 
@@ -44,11 +38,17 @@ $theme_base = theme_base::getInstance();
 	?>
 
 	<!--Mobile Menu-->
-	<div class="mobile-background"></div>
+	<!--<div class="mobile-background"></div>-->
 	<div class="menu mobile-menu">
-		<?php wp_nav_menu( array( 'theme_location' => 'mobile-menu', 'menu_id' => 'mobile-menu', 'container' => false) ); ?>
+		<span class="menu-toggle"><span>Close</span><i class="icon fa fa-bars" aria-hidden="true"></i></span>
+		<?php wp_nav_menu( array( 
+			'theme_location' => 'mobile-menu', 
+			'menu_id' 		=> 'mobile-menu', 
+			'container' 	=> false,
+			'link_after'	=> '<span class="submenu-toggle"><i class="fa fa-angle-down" aria-hidden="true"></i></span>'
+			) 
+		); ?>
 	</div>
-
 
 	<header id="masthead" class="site-header " role="banner">
 		<div class="el-row inner small-padding-top-bottom-small">

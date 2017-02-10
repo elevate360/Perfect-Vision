@@ -13,10 +13,16 @@
     clear: both;
 }
 
+.relative{
+  position: relative;
+}
+.absolute{
+  position: absolute
+}
+
 .site-content{
   background: $color__white;
 }
-
 
 
 //Comment replies
@@ -24,6 +30,132 @@
   padding:20px;
 }
 
+
+//BLOG CARDS
+//Card formatting for blog, categories, tags etc
+.blog-card-listing{
+  
+  .blog-card{
+    
+    .header-wrap{
+      padding: 15px;
+      text-align: center;
+      background-color: $color__green-regular;
+      position:relative;
+      
+      //main link
+      > a{   
+        display: flex;
+      }
+      
+      .posted-on{
+        position: absolute;
+        top: -15px;
+        background-color: $color__gray-regular;
+        padding: 5px 20px;
+        color: $color__white;
+        @include font-size(0.9);
+        width: 150px;
+        left: calc(50% - 75px);
+      }
+      
+      .title{
+        color: $color__white;
+        margin: 0px;
+        position: relative;
+        
+        &:after{
+          content: ' ';
+          background: $color__white;
+          position: relative;
+          width: 50%;
+          height: 1px;
+          display: block;
+          text-align: center;
+          margin-left: 25%;
+          margin-top: 10px;
+        }
+      }
+      
+      .image, .image-overlay{
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+      }
+      .image{
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+      }
+      .image-overlay{
+        background-color: $color__green-regular;
+        opacity: 0.7;
+      }
+      
+      
+      //Flexbox to align image / title
+     @include breakpoint("medium"){
+       min-height: 200px;
+       display: flex;
+       justify-content: center;
+       
+       .title{
+          align-self: center;
+       }
+       
+     }
+     @include breakpoint("large"){
+       min-height: 225px;
+     }
+
+    }
+    
+    .footer-wrap{
+      
+      .author, .post-link{
+        
+        a{
+          display: block;
+          @include simple-transition;
+          background-color: $color__green-regular;
+          color: $color__white;
+          border-top: solid 1px $color__green-dark;
+          
+          &:active,
+          &:focus,
+          &:hover{
+            background-color: $color__green-dark;
+          }
+          
+          //style links differently on large
+          @include breakpoint("medium"){
+            
+            
+            background-color: transparent;
+            color: $color__green-regular;
+            border-top: solid 1px $color__gray-light;
+            border-right: solid 1px $color__gray-light;
+            
+            &:active,
+            &:focus,
+            &:hover{
+              background-color: $color__gray_extra_light;
+              color: $color__gray_dark;
+            }
+            
+          }
+ 
+        }
+ 
+      }
+      
+    }
+    
+  }
+  
+}
 
 
 

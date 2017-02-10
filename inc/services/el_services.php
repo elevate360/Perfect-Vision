@@ -8,7 +8,7 @@ class el_services extends el_content_type{
 	private static $instance = null;
 	
 	public $post_type_args = array(
-		'post_type_name'		=> 'products',
+		'post_type_name'		=> 'services',
 		'post_type_single_name'	=> 'Service',
 		'post_type_plural_name'	=> 'Services',
 		'labels'				=> array(
@@ -58,8 +58,7 @@ class el_services extends el_content_type{
 	
 	
 	/**
-	 * Display function to get the top parent products. Used on our products master page to
-	 * display the top level important items in a listing format
+	 * Display function to get a row listing of content type
 	 */
 	public static function display_service_listing_list(){
 		
@@ -207,8 +206,16 @@ class el_services extends el_content_type{
 										if(!empty($post_description)){
 											$html .= '<div class="content small-margin-bottom-small">' . $post_description . '</div>';
 										}
-										$html .= '<div class="button secondary-button">Read More</div>';
-									$html .= '</a>';
+										$html .= '<a href="' . $post_url .'" title="' . $post_title .'">';
+											$html .= '<div class="button secondary-button">Read More</div>';
+										$html .= '</a>';
+								$html .= '</div>';
+							}
+							//edit link for admins
+							if(current_user_can('edit_posts')){
+								$url = get_edit_post_link($post_id); 
+								$html .= '<div class="el-row small-align-center small-margin-top-bottom-small">';
+									$html .= '<a class="button primary-button small" href="' . $url .'" title="edit">Edit</a>';
 								$html .= '</div>';
 							}
 							
