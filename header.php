@@ -28,7 +28,7 @@ $theme_base = theme_base::getInstance();
 ?>
 </head>
 
-<body <?php body_class(''); ?>>
+<body <?php body_class('debug'); ?>>
 <div id="page" class="site">
 	<a class="skip-link screen-reader-text" href="#content"><?php esc_html_e( 'Skip to content', 'ycc' ); ?></a>
 

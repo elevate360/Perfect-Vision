@@ -2,9 +2,33 @@
  * Overrides for formidable forms plugin
  */
 
-.frm_forms{
-  background-color: $color__gray_light;
-  padding: 25px;
+.frm_forms.with_frm_style{
+  
+  //form wrapper
+  @include box-shadow;
+  padding: 15px;
+  text-align: center;
+  background-image: url('img/bk-contact.jpg');
+  background-repeat: no-repeat;
+  background-position: top left;
+  
+  //medium and large profiles
+  @include breakpoint('medium'){
+    padding: 30px 45px;
+  }
+  
+  h3.frm_form_title{
+    color: $color__green-regular;
+    @include font-size(2.187);
+    font-weight: $font__weight-regular;
+    margin: 1em auto 1.25em auto;
+    text-transform: capitalize;
+  }
+  
+  form{
+    text-align: center;
+  }
+  
   
   input,
   select,

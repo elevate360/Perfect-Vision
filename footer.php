@@ -13,13 +13,19 @@ $theme_base = theme_base::getInstance();
 		</div>
 	</div><!-- #content -->
 
+	<?php
+	//display commitment CTA 
+	do_action('el_display_commitment_program_cta');
+	?>
+	<?php
+	//display appointment CTA 
+	do_action('el_display_appointment_cta');
+	?>
+
+
 	<footer id="colophon" class="site-footer" role="contentinfo">
 		
-		<?php
-		//display footer cta 
-		do_action('el_display_footer_cta');
-		
-		?>
+
 		
 		<div class="footer-widgets el-row inner small-margin-top-bottom-medium medium-margin-top-bottom-x-large">
 			

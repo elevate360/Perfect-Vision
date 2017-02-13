@@ -125,19 +125,19 @@
  */
 @mixin input-placeholder-styles(){
   &::-webkit-input-placeholder {
-      color: $color__gray_light !important;
+      color: $color__gray_regular !important;
   }
   
   &:-moz-placeholder { /* Firefox 18- */
-     color: $color__gray_light !important;
+     color: $color__gray_regular !important;
   }
   
   &::-moz-placeholder {  /* Firefox 19+ */
-     color: $color__gray_light !important;
+     color: $color__gray_regular !important;
   }
   
   &:-ms-input-placeholder {  
-     color: $color__gray_light !important;
+     color: $color__gray_regular !important;
   }
   
 }

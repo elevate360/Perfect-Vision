@@ -13,12 +13,12 @@
  *
  * @param WP_Customize_Manager $wp_customize Theme Customizer object.
  */
-function ycc_customize_register( $wp_customize ) {
+function perfectvision_customize_register( $wp_customize ) {
 	$wp_customize->get_setting( 'blogname' )->transport         = 'postMessage';
 	$wp_customize->get_setting( 'blogdescription' )->transport  = 'postMessage';
 	$wp_customize->get_setting( 'header_textcolor' )->transport = 'postMessage';
 }
-add_action( 'customize_register', 'ycc_customize_register' );
+add_action( 'customize_register', 'perfectvision_customize_register' );
 //Enqueue customizer styles
 function enqueue_customizer_scripts_styles(){
 	wp_enqueue_style('theme-customizer-style', get_stylesheet_directory_uri() . '/inc/customizer/customizer.css'); 
@@ -34,95 +34,51 @@ add_action('init', 'add_customizer_selective_refresh_support');
  * Main Customiser functionality
  */
 function el_customizer_functionality( $wp_customize ){
-	//panels
-	$wp_customize->add_panel( 'contact_details', 
-		array(
-		  'priority'       => 10,
-		  'title'          => __('Contact Details', 'mytheme'),
-		  'description'    => __('Contains settings for the contact details', 'ycc'),
-		  )
-	);
-	
-	//Sections
-	$wp_customize->add_section('el_contact_details',
-		array(
-			'title'			=> 'General Contact Details',
-			'priority'		=> 50,
-			'description'	=> __('Theme specific contact details used throughout the site', 'ycc'),
-			'panel' 		=> 'contact_details'
-		)
-	);
-	$wp_customize->add_section('el_trading_hours',
-		array(
-			'title'			=> 'Trading Hours',
-			'description'	=> __('Contains the trading hour settings for the site', 'ycc'),
-			'panel' 		=> 'contact_details'
-		)
-	);
-	$wp_customize->add_section('el_delivery_hours',
-		array(
-			'title'			=> 'Delivery Hours',
-			'description'	=> __('Contains the delivery hour settings displayed in the site', 'ycc'),
-			'panel' 		=> 'contact_details'
-		)
-	);
-	
 	
 	$wp_customize->add_section('el_social_media',
 		array(
 			'title'			=> 'Social Media',
 			'priority'		=> 51,
-			'description'	=> __('Social media options for the theme. These are pulled into and used across parts of the sites templates', 'ycc')
+			'description'	=> __('Social media options for the theme. These are pulled into and used across parts of the sites templates', 'perfectvision')
 		)
 	);
 	$wp_customize->add_section('el_footer',
 		array(
 			'title'			=> 'Footer',
 			'priority'		=> 52,
-			'description'	=> __('Options relating to the footer are stored here', 'ycc')
+			'description'	=> __('Options relating to the footer are stored here', 'perfectvision')
 		)
 	);
-	$wp_customize->add_section('el_header_cta',
+	$wp_customize->add_section('el_commitment_program_cta',
 		array(
-			'title'			=> 'Header CTA',
-			'priority'		=> 53,
-			'description'	=> __('Settings for the universal CTA section that is shown below the main banner. These can be overridden on a page by page basis', 'ycc')
+			'title'			=> 'Commitment Program CTA',
+			'priority'		=> 80,
+			'description'	=> __('Settings for the Commitment Program CTA displayed above the footer', 'perfectvision')
+		)
+	);
+	$wp_customize->add_section('el_appointment_cta',
+		array(
+			'title'			=> 'Appointment CTA',
+			'priority'		=> 81,
+			'description'	=> __('Settings for the Appointment CTA displayed above the footer', 'perfectvision')
 		)
 	);
 	$wp_customize->add_section('el_header_banner',
 		array(
 			'title'			=> 'Header Banner',
 			'priority'		=> 53,
-			'description'	=> __('Settings that adjust the main header banner displayed on every page. These can be overridden on a page by page basis', 'ycc')
-		)
-	);
-	$wp_customize->add_section('el_footer_cta',
-		array(
-			'title'			=> 'Footer CTA',
-			'priority'		=> 54,
-			'description'	=> __('Settings that adjust the footer CTA displayed at the bottom of each page', 'ycc')
+			'description'	=> __('Settings that adjust the main header banner displayed on every page. These can be overridden on a page by page basis', 'perfectvision')
 		)
 	);
 	
+
 	
 	//Settings
-	$wp_customize->add_setting('el_phone',array());
-	$wp_customize->add_setting('el_fax',array());
-	$wp_customize->add_setting('el_address', array());
-	$wp_customize->add_setting('el_email', array());	
-	$wp_customize->add_setting('el_trading_hours_monday_friday', array());
-	$wp_customize->add_setting('el_trading_hours_saturday', array());
-	$wp_customize->add_setting('el_trading_hours_holidays', array());
-	
-	
 	$wp_customize->add_setting('el_logo', array());
-	$wp_customize->add_setting('el_footer_logo', array());
-	
+
 	//social media
 	$wp_customize->add_setting('el_facebook_url',array());
 	$wp_customize->add_setting('el_twitter_url',array());
-	$wp_customize->add_setting('el_show_link_to_order_page', array('default' => true));
-	$wp_customize->add_setting('el_content_section', array());
 	
 	//association logos
 	$wp_customize->add_setting('el_association_logos', array());
@@ -141,87 +97,39 @@ function el_customizer_functionality( $wp_customize ){
 	$wp_customize->add_setting('el_header_banner_secondary_button_url', array());
 	
 	
-	//footer CTA
-	$wp_customize->add_setting('el_footer_cta_enabled', array('default' => true));
-	$wp_customize->add_setting('el_footer_cta_title', array());
-	$wp_customize->add_setting('el_footer_cta_subtitle', array());
-	$wp_customize->add_setting('el_footer_cta_background_image', array());
-	$wp_customize->add_setting('el_footer_cta_featured_image', array());
+
+	//Commitment CTA
+	$wp_customize->add_setting('el_commitment_program_cta_enabled', array('default' => 1, 'transport' => 'refresh'));
+	$wp_customize->add_setting('el_commitment_program_cta_background_image', array('transport' => 'refresh'));
+	$wp_customize->add_setting('el_commitment_program_cta_background_colour', array('default' => '#f5f5f5', 'transport' => 'refresh'));
+	$wp_customize->add_setting('el_commitment_program_cta_title', array('transport' => 'refresh'));
+	$wp_customize->add_setting('el_commitment_program_cta_content', array('transport' => 'refresh'));
+	$wp_customize->add_setting('el_commitment_program_cta_button_text', array('default' => 'View More', 'transport' => 'refresh'));
+	$wp_customize->add_setting('el_commitment_program_cta_button_url', array('transport' => 'refresh'));
 	
-	//cta 
-	$wp_customize->add_setting('el_header_cta_enabled', array('default' => true));
-	$wp_customize->add_setting('el_header_cta_background_image', array('transport' => 'postMessage'));
-	$wp_customize->add_setting('el_header_cta_background_colour', array('default' => '#f5f5f5', 'transport' => 'postMessage'));
-	$wp_customize->add_setting('el_header_cta_title', array('transport' => 'postMessage'));
-	$wp_customize->add_setting('el_header_cta_subtitle', array('transport' => 'postMessage'));
-	
+	//Appointment CTA
+	$wp_customize->add_setting('el_appointment_cta_enabled', array('default' => 1, 'transport' => 'refresh'));
+	$wp_customize->add_setting('el_appointment_cta_background_image', array('transport' => 'refresh'));
+	$wp_customize->add_setting('el_appointment_cta_background_colour', array('default' => '#ffffff', 'transport' => 'refresh'));
+	$wp_customize->add_setting('el_appointment_cta_title', array('transport' => 'refresh'));
+	$wp_customize->add_setting('el_appointment_cta_content', array('transport' => 'refresh'));
+	$wp_customize->add_setting('el_appointment_cta_button_text', array('default' => 'View More', 'transport' => 'refresh'));
+	$wp_customize->add_setting('el_appointment_cta_button_url', array('transport' => 'refresh'));
 	
 	
 	
 	//Controls	
 	
 	
-	//Footer CTA
-	$wp_customize->add_control('el_footer_cta_enabled',
-		array(
-			'label'			=> __('Enable Banner', 'ycc'),
-			'description'	=> __('Do you want the footer banner displayed? (appears on all pages)', 'ycc'),
-			'section'		=> 'el_footer_cta',
-			'type'			=> 'checkbox',
-			'setting'		=> 'el_footer_cta_enabled'
-		)
-	);
-	$wp_customize->add_control(
-		new WP_Customize_Image_Control(
-			$wp_customize,
-			'el_footer_cta_background_image',
-			array(
-				'label'			=> __('Background Image', 'ycc'),
-				'section'		=> 'el_footer_cta'
-			)
-		)
-	);
-	$wp_customize->add_control(
-		new WP_Customize_Image_Control(
-			$wp_customize,
-			'el_footer_cta_featured_image',
-			array(
-				'label'			=> __('Featured Image Badge', 'ycc'),
-				'section'		=> 'el_footer_cta'
-			)
-		)
-	);
-	$wp_customize->add_control('el_footer_cta_title',
-		array(
-			'label'			=> __('Title', 'ycc'),
-			'description'	=> __('Displayed at the top of the CTA as a large title', 'ycc'),
-			'section'		=> 'el_footer_cta',
-			'type'			=> 'text',
-			'setting'		=> 'el_footer_cta_title'
-		)
-	);
-	$wp_customize->add_control('el_footer_cta_subtitle',
-		array(
-			'label'			=> __('Subtitle', 'ycc'),
-			'description'	=> __('Displays the main content for the CTA, used as standard text', 'ycc'),
-			'section'		=> 'el_footer_cta',
-			'type'			=> 'textarea',
-			'setting'		=> 'el_footer_cta_subtitle'
-		)
-	);
-	
-	
-	
 	
 	
 	//Header Banner 
-
 	$wp_customize->add_control(
 		new WP_Customize_Image_Control(
 			$wp_customize,
 			'el_header_banner_background_image',
 			array(
-				'label'			=> __('Background Image', 'ycc'),
+				'label'			=> __('Background Image', 'perfectvision'),
 				'section'		=> 'el_header_banner'
 			)
 		)
@@ -231,8 +139,8 @@ function el_customizer_functionality( $wp_customize ){
 			$wp_customize,
 			'el_header_banner_overlay_colour',
 			array(
-				'label'			=> __('Overlay Colour', 'ycc'),
-				'decription'	=> __('Colour that\'s applied on top of the image for clarity', 'ycc'),
+				'label'			=> __('Overlay Colour', 'perfectvision'),
+				'decription'	=> __('Colour that\'s applied on top of the image for clarity', 'perfectvision'),
 				'section'		=> 'el_header_banner'
 			)
 		)
@@ -242,8 +150,8 @@ function el_customizer_functionality( $wp_customize ){
 			$wp_customize,
 			'el_header_banner_text_colour',
 			array(
-				'label'			=> __('Text Colour', 'ycc'),
-				'decription'	=> __('Colour used for both the title and subtitle text', 'ycc'),
+				'label'			=> __('Text Colour', 'perfectvision'),
+				'decription'	=> __('Colour used for both the title and subtitle text', 'perfectvision'),
 				'section'		=> 'el_header_banner'
 			)
 		)
@@ -251,8 +159,8 @@ function el_customizer_functionality( $wp_customize ){
 	
 	$wp_customize->add_control('el_header_banner_title',
 		array(
-			'label'			=> __('Title', 'ycc'),
-			'description'	=> __('Displayed at the top of the CTA as a large title', 'ycc'),
+			'label'			=> __('Title', 'perfectvision'),
+			'description'	=> __('Displayed at the top of the CTA as a large title', 'perfectvision'),
 			'section'		=> 'el_header_banner',
 			'type'			=> 'text',
 			'setting'		=> 'el_header_banner_title'
@@ -261,8 +169,8 @@ function el_customizer_functionality( $wp_customize ){
 	
 	$wp_customize->add_control('el_header_banner_subtitle',
 		array(
-			'label'			=> __('Subtitle', 'ycc'),
-			'description'	=> __('Displays the main content for the CTA, used as standard text', 'ycc'),
+			'label'			=> __('Subtitle', 'perfectvision'),
+			'description'	=> __('Displays the main content for the CTA, used as standard text', 'perfectvision'),
 			'section'		=> 'el_header_banner',
 			'type'			=> 'textarea',
 			'setting'		=> 'el_header_banner_subtitle'
@@ -271,8 +179,8 @@ function el_customizer_functionality( $wp_customize ){
 	//primary button
 	$wp_customize->add_control('el_header_banner_primary_button_text',
 		array(
-			'label'			=> __('Primary Button Text', 'ycc'),
-			'description'	=> __('Text used on the first action button', 'ycc'),
+			'label'			=> __('Primary Button Text', 'perfectvision'),
+			'description'	=> __('Text used on the first action button', 'perfectvision'),
 			'section'		=> 'el_header_banner',
 			'type'			=> 'text',
 			'setting'		=> 'el_header_banner_primary_button_text'
@@ -280,8 +188,8 @@ function el_customizer_functionality( $wp_customize ){
 	);
 	$wp_customize->add_control('el_header_banner_primary_button_url',
 		array(
-			'label'			=> __('Primary Button URL', 'ycc'),
-			'description'	=> __('Full URL to the target page for this button', 'ycc'),
+			'label'			=> __('Primary Button URL', 'perfectvision'),
+			'description'	=> __('Full URL to the target page for this button', 'perfectvision'),
 			'section'		=> 'el_header_banner',
 			'type'			=> 'url',
 			'setting'		=> 'el_header_banner_primary_button_url'
@@ -290,8 +198,8 @@ function el_customizer_functionality( $wp_customize ){
 	//secondary button
 	$wp_customize->add_control('el_header_banner_secondary_button_text',
 		array(
-			'label'			=> __('Primary Button Text', 'ycc'),
-			'description'	=> __('Text used on the second action button', 'ycc'),
+			'label'			=> __('Primary Button Text', 'perfectvision'),
+			'description'	=> __('Text used on the second action button', 'perfectvision'),
 			'section'		=> 'el_header_banner',
 			'type'			=> 'text',
 			'setting'		=> 'el_header_banner_secondary_button_text'
@@ -299,8 +207,8 @@ function el_customizer_functionality( $wp_customize ){
 	);
 	$wp_customize->add_control('el_header_banner_secondary_button_url',
 		array(
-			'label'			=> __('Primary Button URL', 'ycc'),
-			'description'	=> __('Full URL to the target page for this button', 'ycc'),
+			'label'			=> __('Primary Button URL', 'perfectvision'),
+			'description'	=> __('Full URL to the target page for this button', 'perfectvision'),
 			'section'		=> 'el_header_banner',
 			'type'			=> 'url',
 			'setting'		=> 'el_header_banner_secondary_button_url'
@@ -309,108 +217,216 @@ function el_customizer_functionality( $wp_customize ){
 
 	
 	
-	
-	
-	
-	//Header CTA
-	$wp_customize->add_control('el_header_cta_enabled',
+	//Commitment Program CTA (Above Footer)
+	$wp_customize->add_control('el_commitment_program_cta_enabled',
 		array(
-			'label'			=> __('Enable CTA', 'ycc'),
-			'description'	=> __('Do you want the CTA displayed?', 'ycc'),
-			'section'		=> 'el_header_cta',
+			'label'			=> __('Enable CTA', 'perfectvision'),
+			'description'	=> __('Show or hide the Commitment Program CTA', 'perfectvision'),
+			'section'		=> 'el_commitment_program_cta',
 			'type'			=> 'checkbox',
-			'setting'		=> 'el_header_cta_enabled'
+			'setting'		=> 'el_commitment_program_cta_enabled'
 		)
 	);
 	$wp_customize->add_control(
 		new WP_Customize_Image_Control(
 			$wp_customize,
-			'el_header_cta_background_image',
+			'el_commitment_program_cta_background_image',
 			array(
-				'label'			=> __('Background Image', 'ycc'),
-				'section'		=> 'el_header_cta'
+				'label'			=> __('Background Image', 'perfectvision'),
+				'section'		=> 'el_commitment_program_cta'
 			)
 		)
 	);
 	$wp_customize->add_control(
 		new WP_Customize_Color_Control(
 			$wp_customize,
-			'el_header_cta_background_colour',
+			'el_commitment_program_cta_background_colour',
 			array(
-				'label'			=> __('Background Colour', 'ycc'),
-				'decription'	=> __('Background colour used for the CTA section', 'ycc'),
-				'section'		=> 'el_header_cta'
+				'label'			=> __('Background Colour', 'perfectvision'),
+				'decription'	=> __('Background colour used for the CTA section', 'perfectvision'),
+				'section'		=> 'el_commitment_program_cta'
 			)
 		)
 	);
-	$wp_customize->add_control('el_header_cta_title',
+	$wp_customize->add_control('el_commitment_program_cta_title',
 		array(
-			'label'			=> __('Title', 'ycc'),
-			'description'	=> __('Displayed at the top of the CTA as a large title', 'ycc'),
-			'section'		=> 'el_header_cta',
+			'label'			=> __('Title', 'perfectvision'),
+			'description'	=> __('Displayed at the top of the CTA as a large title', 'perfectvision'),
+			'section'		=> 'el_commitment_program_cta',
 			'type'			=> 'text',
-			'setting'		=> 'el_header_cta_title'
+			'setting'		=> 'el_commitment_program_cta_title'
 		)
 	);
-	$wp_customize->add_control('el_header_cta_subtitle',
+	$wp_customize->add_control('el_commitment_program_cta_content',
 		array(
-			'label'			=> __('Subtitle', 'ycc'),
-			'description'	=> __('Displays the main content for the CTA, used as standard text', 'ycc'),
-			'section'		=> 'el_header_cta',
+			'label'			=> __('Content', 'perfectvision'),
+			'description'	=> __('Displays the main content for the CTA, used as standard text', 'perfectvision'),
+			'section'		=> 'el_commitment_program_cta',
 			'type'			=> 'textarea',
-			'setting'		=> 'el_header_cta_subtitle'
+			'setting'		=> 'el_commitment_program_cta_content'
+		)
+	);
+	$wp_customize->add_control('el_commitment_program_cta_button_text',
+		array(
+			'label'			=> __('Button Text', 'perfectvision'),
+			'description'	=> __('Text used for the CTA button', 'perfectvision'),
+			'section'		=> 'el_commitment_program_cta',
+			'type'			=> 'text',
+			'setting'		=> 'el_commitment_program_cta_button_text'
+		)
+	);
+	$wp_customize->add_control('el_commitment_program_cta_button_url',
+		array(
+			'label'			=> __('Button URL', 'perfectvision'),
+			'description'	=> __('Full URL to the target page', 'perfectvision'),
+			'section'		=> 'el_commitment_program_cta',
+			'type'			=> 'url',
+			'setting'		=> 'el_header_banner_secondary_button_url'
 		)
 	);
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	
+	
+	//Appointment CTA (Above Footer)
+	$wp_customize->add_control('el_appointment_cta_enabled',
+		array(
+			'label'			=> __('Enable CTA', 'perfectvision'),
+			'description'	=> __('Show or hide the Commitment Program CTA', 'perfectvision'),
+			'section'		=> 'el_appointment_cta',
+			'type'			=> 'checkbox',
+			'setting'		=> 'el_appointment_cta_enabled'
+		)
+	);
+	$wp_customize->add_control(
+		new WP_Customize_Image_Control(
+			$wp_customize,
+			'el_appointment_cta_background_image',
+			array(
+				'label'			=> __('Background Image', 'perfectvision'),
+				'section'		=> 'el_appointment_cta'
+			)
+		)
+	);
+	$wp_customize->add_control(
+		new WP_Customize_Color_Control(
+			$wp_customize,
+			'el_appointment_cta_background_colour',
+			array(
+				'label'			=> __('Background Colour', 'perfectvision'),
+				'decription'	=> __('Background colour used for the CTA section', 'perfectvision'),
+				'section'		=> 'el_appointment_cta'
+			)
+		)
+	);
+	$wp_customize->add_control('el_appointment_cta_title',
+		array(
+			'label'			=> __('Title', 'perfectvision'),
+			'description'	=> __('Displayed at the top of the CTA as a large title', 'perfectvision'),
+			'section'		=> 'el_appointment_cta',
+			'type'			=> 'text',
+			'setting'		=> 'el_appointment_cta_title'
+		)
+	);
+	$wp_customize->add_control('el_appointment_cta_content',
+		array(
+			'label'			=> __('Content', 'perfectvision'),
+			'description'	=> __('Displays the main content for the CTA, used as standard text', 'perfectvision'),
+			'section'		=> 'el_appointment_cta',
+			'type'			=> 'textarea',
+			'setting'		=> 'el_appointment_cta_content'
+		)
+	);
+	$wp_customize->add_control('el_appointment_cta_button_text',
+		array(
+			'label'			=> __('Button Text', 'perfectvision'),
+			'description'	=> __('Text used for the CTA button', 'perfectvision'),
+			'section'		=> 'el_appointment_cta',
+			'type'			=> 'text',
+			'setting'		=> 'el_appointment_cta_button_text'
+		)
+	);
+	$wp_customize->add_control('el_appointment_cta_button_url',
+		array(
+			'label'			=> __('Button URL', 'perfectvision'),
+			'description'	=> __('Full URL to the target page', 'perfectvision'),
+			'section'		=> 'el_appointment_cta',
+			'type'			=> 'url',
+			'setting'		=> 'el_appointment_cta_button_url'
+		)
+	);
+	
+	
+
+	
+	
+	
+	
+	
 	//add support for selective refresh for selective theme mods
 	//https://make.wordpress.org/core/2016/11/10/visible-edit-shortcuts-in-the-customizer-preview/
-	if(version_compare($GLOBALS['wp_version'], '4.5', '>=')){
-			
-		//TODO: These render functions should be called from OBJECTS to keep the logic DRY	
-			
-		//WP 4.5 refresh partial
-		$wp_customize->selective_refresh->add_partial('el_header_cta_title', array(
-			'selector'			=> '.header-hero-customizer .title',
-			'render_callback'	=> function(){
-				$el_header_cta_title = get_theme_mod('el_header_cta_title');
-				echo $el_header_cta_title;
-			}
-		));
-		$wp_customize->selective_refresh->add_partial('el_header_cta_subtitle', array(
-			'selector'			=> '.header-hero-customizer .subtitle',
-			'render_callback'	=> function(){
-				$el_header_cta_subtitle = get_theme_mod('el_header_cta_subtitle');
-				echo $el_header_cta_subtitle;
-			}
-		));
-		$wp_customize->selective_refresh->add_partial('el_header_cta_background_colour', array(
-			'selector'			=> '.header-hero-customizer .background-color',
-			'render_callback'	=> function(){
-				$el_header_cta_background_colour = get_theme_mod('el_header_cta_background_colour');
-				var_dump($el_header_cta_background_colour);
-				if(!empty($el_header_cta_background_colour)){
-					$style = '';
-					$style .= (!empty($el_header_cta_background_colour)) ? 'background-color: ' . $el_header_cta_background_colour . '; ' : '';
-					echo '<div class="background-color" style="' . $style . '"></div>';
-				}
-				
-			}
-		));
-		$wp_customize->selective_refresh->add_partial('el_header_cta_background_image', array(
-			'selector'			=> '.header-hero-customizer .background-image',
-			'render_callback'	=> function(){
-				$el_header_cta_background_image = get_theme_mod('el_header_cta_background_image');
-				if(!empty($el_header_cta_background_image)){
-					$style = '';
-					$style .= (!empty($el_header_cta_background_image)) ? 'background-image: url(' . $el_header_cta_background_image . '); ' : '';
-					echo '<div class="background-image" style="' . $style . '"></div>';	
-				}
-				
-				
-			}
-		
-		));
-	}
+	// if(version_compare($GLOBALS['wp_version'], '4.5', '>=')){
+// 			
+		// //TODO: These render functions should be called from OBJECTS to keep the logic DRY	
+// 			
+		// //WP 4.5 refresh partial
+		// $wp_customize->selective_refresh->add_partial('el_header_cta_title', array(
+			// 'selector'			=> '.header-hero-customizer .title',
+			// 'render_callback'	=> function(){
+				// $el_header_cta_title = get_theme_mod('el_header_cta_title');
+				// echo $el_header_cta_title;
+			// }
+		// ));
+		// $wp_customize->selective_refresh->add_partial('el_header_cta_subtitle', array(
+			// 'selector'			=> '.header-hero-customizer .subtitle',
+			// 'render_callback'	=> function(){
+				// $el_header_cta_subtitle = get_theme_mod('el_header_cta_subtitle');
+				// echo $el_header_cta_subtitle;
+			// }
+		// ));
+		// $wp_customize->selective_refresh->add_partial('el_header_cta_background_colour', array(
+			// 'selector'			=> '.header-hero-customizer .background-color',
+			// 'render_callback'	=> function(){
+				// $el_header_cta_background_colour = get_theme_mod('el_header_cta_background_colour');
+				// var_dump($el_header_cta_background_colour);
+				// if(!empty($el_header_cta_background_colour)){
+					// $style = '';
+					// $style .= (!empty($el_header_cta_background_colour)) ? 'background-color: ' . $el_header_cta_background_colour . '; ' : '';
+					// echo '<div class="background-color" style="' . $style . '"></div>';
+				// }
+// 				
+			// }
+		// ));
+		// $wp_customize->selective_refresh->add_partial('el_header_cta_background_image', array(
+			// 'selector'			=> '.header-hero-customizer .background-image',
+			// 'render_callback'	=> function(){
+				// $el_header_cta_background_image = get_theme_mod('el_header_cta_background_image');
+				// if(!empty($el_header_cta_background_image)){
+					// $style = '';
+					// $style .= (!empty($el_header_cta_background_image)) ? 'background-image: url(' . $el_header_cta_background_image . '); ' : '';
+					// echo '<div class="background-image" style="' . $style . '"></div>';	
+				// }
+// 				
+// 				
+			// }
+// 		
+		// ));
+	// }
 	
 	
 	//Site Identity (default)
@@ -419,104 +435,9 @@ function el_customizer_functionality( $wp_customize ){
 			$wp_customize,
 			'el_logo',
 			array(
-				'label'			=> __('Theme Logo','ycc'),
-				'description'	=> __('Selct the logo used for this theme. Will be displayed in the header and across other locations', 'ycc'),
+				'label'			=> __('Theme Logo','perfectvision'),
+				'description'	=> __('Selct the logo used for this theme. Will be displayed in the header and across other locations', 'perfectvision'),
 				'section'		=> 'title_tagline'
-			)
-		)
-	);
-	
-	
-	
-	//footer
-	$wp_customize->add_control(
-		new WP_Customize_Image_Control(
-			$wp_customize,
-			'el_footer_logo',
-			array(
-				'label'			=> __('Footer Logo','ycc'),
-				'description'	=> __('Selct the logo to be displayed in the footer, along side the footer widget areas','ycc'),
-				'section'		=> 'el_footer'
-			)
-		)
-	);
-	
-	//Contact settings
-	$wp_customize->add_control('el_phone', 
-		array(
-			'label'			=> __('Phone Number','ycc'),
-			'section'		=> 'el_contact_details',
-			'type'			=> 'text',
-			'setting'		=> 'el_phone',
-			'input_attrs'	=> array(
-				'placeholder'	=> 'E.g (02) 9790 6474'
-			)
-		)
-	);
-	$wp_customize->add_control('el_fax', 
-		array(
-			'label'			=> __('Fax Number','ycc'),
-			'section'		=> 'el_contact_details',
-			'type'			=> 'text',
-			'setting'		=> 'el_fax',
-			'input_attrs'	=> array(
-				'placeholder'	=> 'E.g (02) 9790 6474'
-			)
-		)
-	);
-	$wp_customize->add_control('el_address', 
-		array(
-			'label'			=> __('Address','ycc'),
-			'section'		=> 'el_contact_details',
-			'type'			=> 'textarea',
-			'setting'		=> 'el_address',
-			'input_attrs'	=> array(
-				'placeholder'	=> 'E.g 2/425 Pacific Hwy, Crows Nest NSW 2065'
-			)
-		)
-	);
-	$wp_customize->add_control('el_email', 
-		array(
-			'label'			=> __('Address','ycc'),
-			'section'		=> 'el_contact_details',
-			'type'			=> 'email',
-			'setting'		=> 'el_email',
-			'input_attrs'	=> array(
-				'placeholder'	=> 'admin@elevate360.com.au'
-			)
-		)
-	);
-	
-	$wp_customize->add_control('el_trading_hours_monday_friday', 
-		array(
-			'label'			=> __('Monday - Friday','ycc'),
-			'section'		=> 'el_trading_hours',
-			'type'			=> 'text',
-			'setting'		=> 'el_trading_hours_monday_friday',
-			'input_attrs'	=> array(
-				'placeholder'	=> 'E.g 7.00am - 4.00pm'
-			)
-		)
-	);
-	$wp_customize->add_control('el_trading_hours_saturday', 
-		array(
-			'label'			=> __('Saturday','ycc'),
-			'section'		=> 'el_trading_hours',
-			'type'			=> 'text',
-			'setting'		=> 'el_trading_hours_saturday',
-			'input_attrs'	=> array(
-				'placeholder'	=> 'E.g 7.00am - 12.00pm'
-			)
-		)
-	);
-	$wp_customize->add_control('el_trading_hours_holidays', 
-		array(
-			'label'			=> __('Public Holidays & Sunday','ycc'),
-			'section'		=> 'el_trading_hours',
-			'type'			=> 'text',
-			'setting'		=> 'el_trading_hours_holidays',
-			'input_attrs'	=> array(
-				'placeholder'	=> 'E.g Closed'
 			)
 		)
 	);
@@ -525,7 +446,7 @@ function el_customizer_functionality( $wp_customize ){
 	//Social media settings
 	$wp_customize->add_control('el_facebook_url', 
 		array(
-			'label'			=> __('Facebook URL','ycc'),
+			'label'			=> __('Facebook URL','perfectvision'),
 			'section'		=> 'el_social_media',
 			'type'			=> 'text',
 			'setting'		=> 'el_facebook_url',
@@ -536,7 +457,7 @@ function el_customizer_functionality( $wp_customize ){
 	);
 	$wp_customize->add_control('el_twitter_url', 
 		array(
-			'label'			=> __('Twitter URL','ycc'),
+			'label'			=> __('Twitter URL','perfectvision'),
 			'section'		=> 'el_social_media',
 			'type'			=> 'text',
 			'setting'		=> 'el_twitter_url',
@@ -545,18 +466,7 @@ function el_customizer_functionality( $wp_customize ){
 			)
 		)
 	);
-	$wp_customize->add_control('el_show_link_to_order_page', 
-		array(
-			'label'			=> __('Show link to the order page', 'ycc'),
-			'description'	=> __('Determines if on the fixed social media bar we display a link to the order page', 'ycc'),
-			'section'		=> 'el_social_media',
-			'type'			=> 'checkbox',
-			'setting'		=> 'el_twitter_url',
-			'input_attrs'	=> array(
-				'placeholder'	=> 'Full URL to Twitter Page'
-			)
-		)
-	);
+
 	
 	
 	
@@ -570,7 +480,7 @@ add_action('customize_register', 'el_customizer_functionality', 15);
 
 
 
-function ycc_customize_preview_js() {
-	wp_enqueue_script( 'ycc_customizer', get_template_directory_uri() . '/js/customizer.js', array( 'customize-preview' ), '20151215', true );
+function perfectvision_customize_preview_js() {
+	wp_enqueue_script( 'perfectvision_customizer', get_template_directory_uri() . '/js/customizer.js', array( 'customize-preview' ), '20151215', true );
 }
-add_action( 'customize_preview_init', 'ycc_customize_preview_js' );
+add_action( 'customize_preview_init', 'perfectvision_customize_preview_js' );

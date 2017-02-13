@@ -127,7 +127,8 @@
         
         a{
           color: $color__black;
-          padding: 15px;
+          padding: 12px;
+          @include font-size(0.95);
           @include simple-transition;
         }
         
@@ -185,6 +186,7 @@
     
     a{
       color: $color__white;
+      @include font-size(1.0);
     }
     
     //Curent page item
@@ -301,8 +303,7 @@
     width: 30px;
     height: 30px;
     text-align: center;
-    background: $color__white;
-    color: $color__green-dark;
+    color: $color__white;
     cursor: pointer;
     line-height: 30px;
     @include font-size(1.2);
@@ -380,7 +381,6 @@
   .menu-toggle{
     display: inline-block;
     text-align: center;
-    background: $color__green_regular;
     font-size: 1.7rem;
     width: 45px;
     height: 45px;

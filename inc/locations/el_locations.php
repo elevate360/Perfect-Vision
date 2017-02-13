@@ -90,7 +90,7 @@
 	/**
 	 * Display function to list out content type
 	 */
-	public static function display_service_listing_list(){
+	public static function display_location_listing_list(){
 		
 		$html = '';
 		$instance = self::getInstance();
@@ -108,7 +108,7 @@
 	/**
 	 * Display function to display content type in a grid
 	 */
-	public static function display_service_listing_grid(){
+	public static function display_location_listing_grid(){
 			
 		$html = '';
 		$instance = self::getInstance();
@@ -162,6 +162,8 @@
 		$posts = get_posts($post_args);
 		if($posts){
 			
+			$post_count = count($posts);
+			
 			//determine our layout style
 			$classes = '';
 			if(isset($arguments['style_type'])){		
@@ -177,16 +179,8 @@
 			foreach($posts as $post){
 				
 				$post_id = $post->ID;
-				$post_title = $post->post_title; 
 				$post_url = get_permalink($post_id);
 		
-				//collect metadata
-				$location_phone_number = get_post_meta($post_id, 'location_phone_number', true);
-				$location_email_address = get_post_meta($post_id, 'location_email_address', true);
-				$location_address = get_post_meta($post_id, 'location_address', true);
-				$location_summary = get_post_meta($post_id, 'location_summary', true);
-				$location_address_map = get_post_meta($post_id, 'location_address_map', true);
-				
 				
 				//Output based on what type of listing
 				if($arguments['style_type'] == 'row'){
@@ -210,61 +204,39 @@
 
 				//Grid Style
 				else if($arguments['style_type'] == 'grid'){
-					$html .= '<div class="location el-col-small-12 el-col-medium-6 small-padding-top-bottom-small small-margin-bottom-small">';
+					
+					//if > 1 posts, create 2 column layout
+					$classes = '';
+					$classes .= ($post_count > 1) ? 'el-col-medium-6' : '';  
+					
+					$html .= '<div class="location el-col-small-12 small-padding-top-bottom-small small-margin-bottom-small '  . $classes  .'">';
 						$html .= '<div class="inner">';
 						
-							$html .= '<section class="header small-align-center">';
-								$html .= '<h2 class="title">' . $post_title . '</h2>';
-							$html .= '</section>';
 							
-							//summary data
-							if(!empty($location_summary)){
-								$html .= '<section class="summary small-margin-bottom-medium">' . $location_summary  . '</section>';
+							
+							//Multiple locations to display, use single column
+							if($post_count > 1){
+								$html .= $this->get_location_title($post_id);
+								$html .= $this->get_location_summary($post_id);
+								$html .= $this->get_location_contact_information($post_id);
+								$html .= $this->get_location_contact_map($post_id);
+								
+							}
+							//single location showing, adjust layout
+							else{
+								$html .= '<div class="el-col-small-12 el-col-medium-6">';
+									$html .= $this->get_location_summary($post_id);
+									$html .= $this->get_location_contact_information($post_id);
+								$html .= '</div>';
+								$html .= '<div class="el-col-small-12 el-col-medium-6">';
+									$html .= $this->get_location_contact_map($post_id);
+								$html .= '</div>';
 							}
 							
-							//main contact data
-							$html .= '<section class="contact-info small-margin-bottom-medium">';
-								
-								if(!empty($location_phone_number)){
-									$html .= '<div class="section phone el-row small-padding-top-bottom-small">';
-										$html .= '<div class="icon-wrap el-col-small-12 el-col-medium-2 small-align-center medium-align-left">';
-											$html .= '<span class="icon"></span>';
-										$html .= '</div>';
-										$html .= '<div class="content-wrap el-col-small-12 el-col-medium-10 small-align-center medium-align-left">';
-											$html .= '<a href="tel:' . trim($location_phone_number) . '" title="' . __('call us today', 'perfectvision') . '">' . $location_phone_number . '</a>';
-										$html .= '</div>';
-									$html .= '</div>';								
-								}
-								if(!empty($location_email_address)){
-									$html .= '<div class="section email el-row small-padding-top-bottom-small">';
-										$html .= '<div class="icon-wrap el-col-small-12 el-col-medium-2 small-align-center medium-align-left">';
-											$html .= '<span class="icon"></span>';
-										$html .= '</div>';
-										$html .= '<div class="content-wrap el-col-small-12 el-col-medium-10 small-align-center medium-align-left">';
-											$html .= '<a href="mailto:' . trim($location_email_address) . '" title="' . __('email us today', 'perfectvision') . '">' . $location_email_address . '</a>';
-										$html .= '</div>';
-									$html .= '</div>';							
-								}
-								if(!empty($location_address)){
-									$html .= '<div class="section location el-row small-padding-top-bottom-small">';
-										$html .= '<div class="icon-wrap el-col-small-12 el-col-medium-2 small-align-center medium-align-left">';
-											$html .= '<span class="icon"></span>';
-										$html .= '</div>';
-										$html .= '<div class="content-wrap el-col-small-12 el-col-medium-10 small-align-center medium-align-left">';
-											$html .= $location_address;
-										$html .= '</div>';
-									$html .= '</div>';							
-								}
-								
-							$html .= '</section>';
+
 							
 							
-							//contact mapo
-							if(!empty($location_address_map)){
-								$html .= '<section class="map">';
-									$html .= $location_address_map;
-								$html .= '</section>';
-							}
+							
 							
 							//edit link for admins
 							if(current_user_can('edit_posts')){
@@ -284,6 +256,113 @@
 		
 		return $html;
 	}
+
+	/**
+	 * Gets the title for a single location
+	 */
+	function get_location_title($post_id){
+			
+		$post = get_post($post_id);
+		$post_title = $post->post_title;
+		
+		$html = '';
+			
+		//location title
+		$html .= '<section class="header small-align-center">';
+			$html .= '<h2 class="title">' . $post_title . '</h2>';
+		$html .= '</section>';
+		
+		return $html;
+	} 
+	
+
+	/**
+	 * Get the summary for a single location (basic summary text)
+	 */
+	function get_location_summary($post_id){
+			
+		$html = '';
+		$location_summary = get_post_meta($post_id, 'location_summary', true);
+			
+		//summary data
+		if(!empty($location_summary)){
+			$html .= '<section class="summary small-margin-bottom-medium">' . $location_summary  . '</section>';
+		}
+		
+		return $html;
+	}
+
+	/**
+	 * Gets the contact information (phone, email, address) for a single location
+	 */
+	function get_location_contact_information($post_id){
+		
+		$location_phone_number = get_post_meta($post_id, 'location_phone_number', true);
+		$location_email_address = get_post_meta($post_id, 'location_email_address', true);
+		$location_address = get_post_meta($post_id, 'location_address', true);
+				
+		$html = '';
+		
+		//main contact data
+		$html .= '<section class="contact-info small-margin-bottom-medium">';
+			
+			if(!empty($location_phone_number)){
+				$html .= '<div class="section phone el-row small-padding-top-bottom-small">';
+					$html .= '<div class="icon-wrap el-col-small-12 el-col-medium-2 small-align-center medium-align-left">';
+						$html .= '<span class="icon"></span>';
+					$html .= '</div>';
+					$html .= '<div class="content-wrap el-col-small-12 el-col-medium-10 small-align-center medium-align-left">';
+						$html .= '<a href="tel:' . trim($location_phone_number) . '" title="' . __('call us today', 'perfectvision') . '">' . $location_phone_number . '</a>';
+					$html .= '</div>';
+				$html .= '</div>';								
+			}
+			if(!empty($location_email_address)){
+				$html .= '<div class="section email el-row small-padding-top-bottom-small">';
+					$html .= '<div class="icon-wrap el-col-small-12 el-col-medium-2 small-align-center medium-align-left">';
+						$html .= '<span class="icon"></span>';
+					$html .= '</div>';
+					$html .= '<div class="content-wrap el-col-small-12 el-col-medium-10 small-align-center medium-align-left">';
+						$html .= '<a href="mailto:' . trim($location_email_address) . '" title="' . __('email us today', 'perfectvision') . '">' . $location_email_address . '</a>';
+					$html .= '</div>';
+				$html .= '</div>';							
+			}
+			if(!empty($location_address)){
+				$html .= '<div class="section location el-row small-padding-top-bottom-small">';
+					$html .= '<div class="icon-wrap el-col-small-12 el-col-medium-2 small-align-center medium-align-left">';
+						$html .= '<span class="icon"></span>';
+					$html .= '</div>';
+					$html .= '<div class="content-wrap el-col-small-12 el-col-medium-10 small-align-center medium-align-left">';
+						$html .= $location_address;
+					$html .= '</div>';
+				$html .= '</div>';							
+			}
+			
+		$html .= '</section>';
+		
+		return $html;
+	}
+	
+	/**
+	 * Gets the location map HTML for a single location
+	 */
+	function get_location_contact_map($post_id){
+			
+		$html = '';
+		$location_address_map = get_post_meta($post_id, 'location_address_map', true);
+			
+		//contact map
+		if(!empty($location_address_map)){
+			$html .= '<section class="map">';
+				$html .= $location_address_map;
+			$html .= '</section>';
+		}
+		
+		return $html;
+		
+	}
+
+
+
 	
 	
 	/**

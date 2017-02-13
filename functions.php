@@ -34,19 +34,14 @@
 		add_action('widgets_init', array($this, 'register_widgets')); //new widgets for use in theme
 		add_action('init', array($this, 'remove_content_from_post_types')); //removes the content block from some post types
 
-				
-		//add_action('add_meta_boxes', array($this, 'register_post_metaboxes')); //registers metaboxes for use on posts, pages, products etc
-		//add_action('save_post', array($this, 'save_post_metaboxes')); //triggers on save, to save metabox fields
-				
+			
 		//Custom action hooks (used in theme templates)
 		add_action('el_display_footer_widgets', array($this, 'el_display_footer_widgets'));
-		add_action('el_display_association_logos', array($this, 'el_display_association_logos'));
 		add_action('el_display_theme_logo', array($this, 'el_display_theme_logo'));
-		add_action('el_display_footer_logo', array($this, 'el_display_footer_logo'));
-		add_action('el_display_header_cta', array($this, 'el_display_header_cta'), 10, 1); 
-		add_action('el_display_header_banner', array($this, 'el_display_header_banner'));
-		add_action('el_display_footer_cta', array($this, 'el_display_footer_cta'));
+		add_action('el_display_commitment_program_cta', array($this, 'el_display_commitment_program_cta'), 10, 1); 
+		add_action('el_display_appointment_cta', array($this, 'el_display_appointment_cta'), 10, 1);
 		
+		add_action('el_display_header_banner', array($this, 'el_display_header_banner'));
 		add_action('el_display_post_card_listing', array($this, 'display_post_card_listing')); 
 	}
 	
@@ -435,15 +430,14 @@
 	}
 	
 	/**
-	 * register generic widgets for the theme.
-	 * - Download object widget (used for downloading a file)
+	 * register generic widgets for the theme, loading the required modules 
 	 * - Image widget (used for displaying a single image)
-	 * - Contact Widget
 	 */
 	public function register_widgets(){
-		register_widget('el_download_widget');
-		register_widget('el_contact_us_widget');
-		register_widget('el_editor_widget');
+		
+		require(get_stylesheet_directory() . '/inc/widgets/el_image_widget.php');
+		register_widget('el_image_widget');
+	
 	}
 	
 	/**
@@ -555,56 +549,7 @@
 		}
 		return $result;
 	}
-	
-	/**
-	 * Gets the HTML markup for the fixed social media bar displayed on the right hand side of the site
-	 * 
-	 * Pulls in settings from the customizer (Fixed social bar) such as where it links to 
-	 */
-	public function get_fixed_social_bar_html(){
-		
-		$html = '';
-		
-		//look for customizer elements
-		$el_twitter_url = get_theme_mod('el_twitter_url');
-		$el_facebook_url = get_theme_mod('el_facebook_url');
-		$el_show_link_to_order_page = get_theme_mod('el_show_link_to_order_page');
-		
-		$html .= '<div class="sticky-side-element">';
-		
-		if(!empty($el_show_link_to_order_page) && $el_show_link_to_order_page){
-			$url = '';
-			$html .= '<div class="element quote">';
-				$html .= '<a href="' . $url . '" target="_blank" title="Place your order!">';
-					$html .= __('Place Your Order!', 'ycc');
-				$html .= '</a>';
-			$html .= '</div>';
-		}
-		if(!empty($el_twitter_url)){
-			$html .= '<div class="element twitter">';
-				$html .= '<a href="' . $el_twitter_url . '" target="_blank" title="Twitter">';
-					$html .= '<i class="fa fa-twitter" aria-hidden="true"></i>';
-				$html .= '</a>';
-			$html .= '</div>';
-		}
-		if(!empty($el_facebook_url)){
-			$html .= '<div class="element facebook">';
-				$html .= '<a href="' . $el_facebook_url .'" target="_blank" title="Facebook">';
-					$html .= '<i class="fa fa-facebook" aria-hidden="true"></i>';
-				$html .= '</a>';
-			$html .= '</div>';
-		}
-		
-		
-	
-		
-		
-		$html .= '</div>';
-		
-		
-		return $html;
-	}
-	
+
 	/**
 	 * Loads public facing CSS/JS
 	 */
@@ -777,7 +722,7 @@
 						
 						$html .= '<div class="el-row inner">';
 						
-							$html .= '<div class="hero-card hero-icon el-col-small-12">';
+							$html .= '<div class="hero-card hero-icon el-col-small-12 el-col-medium-8 el-col-medium-offset-2">';
 								
 								//icon
 								$html .= '<div class="icon"></div>';
@@ -1232,21 +1177,11 @@
 				
 	} 
 	
-	/**
-	 * Displays the fixed social media and link bar on the right hand side of the screen
-	 */
-	public static function el_display_fixed_social_bar(){
-		
-		$instance = self::getInstance();
-		$html = '';
-		
-		$html .= $instance->get_fixed_social_bar_html();
-		
-		echo $html;
-	}
 	
 	/**
-	 * Displays either the default header banner set in the theme customizer. Used to display the page title and associated elements
+	 * Displays default header banner set in the theme customizer. 
+	 * 
+	 * Used to display a background image, title, content and set of CTA buttons; The homepage displays the banner differently as per style guide
 	 */
 	public static function el_display_header_banner($object){
 		
@@ -1263,11 +1198,7 @@
 		$el_header_banner_primary_button_url = get_theme_mod('el_header_banner_primary_button_url');
 		$el_header_banner_secondary_button_text = get_theme_mod('el_header_banner_secondary_button_text');
 		$el_header_banner_secondary_button_url = get_theme_mod('el_header_banner_secondary_button_url');
-
 		
-		
-		
-			
 		$style = '';
 		$style .= (!empty($el_header_banner_background_image)) ? 'background-image: url(' . $el_header_banner_background_image . '); ' : '';
 		
@@ -1368,53 +1299,18 @@
 								$title = $object->display_name;
 								$html .= '<div class="h2 small-align-center large-align-right">' . __('Author','perfectvision') . '</div>';
 								$html .= '<h1 class="title">' . $title . '</h1>'; 
-							}
-							
-							
-							
+							}	
 						}
-						
-	
-						
 					$html .= '</div>';
-					
-					
+
 				$html .= '</div>';
 			$html .= '</div>';
 		$html .= '</section>';
-			
-			
-		
-		
-		
-			
-		
-		
-		
-		
-		
-		
-		
-
-
-		
-		
-		echo $html;
-		
-	}
 	
-	/**
-	 * Displays the footer CTA (content pulled from customizer)
-	 */
-	public static function el_display_footer_cta(){
-			
-		$instance = self::getInstance();
-		$html = '';
-		
-		$html .= $instance->get_footer_cta();
-		
 		echo $html;
+		
 	}
+
 	
 	/**
 	 * Determine if the current post overrides the banner.
@@ -1435,274 +1331,137 @@
 		return $html ; 
 		
 	}
-	
-	/**
-	 * Displays static association images in the theme
-	 */
-	public static function el_display_association_logos(){
-		$instance = self::getInstance();
-		
-		$html = '';
-		
-		$html .= $instance->get_association_logos();
-		
-		
-		
-		
-		echo $html;
-	}
-	
-	/**
-	 * Gets the association logos to be displayed on the site in a grid
-	 */
-	public function get_association_logos(){
-		
-		$html = '';
-		
-		$html .= '<div class="association-logos small-align-center">';
-			$html .= '<div class="el-row inner inner-small small-padding-top-bottom-small medium-padding-top-bottom-medium">';
-		
-				$html .= '<div class="logo el-col-small-6 el-col-medium-3 small-padding-bottom-small">';
-					$html .= '<img alt="haccp approved" src="' . get_stylesheet_directory_uri() . '/img/associations/logo-haccp-gray.png' . '"/>';
-				$html .= '</div>';
-				$html .= '<div class="logo el-col-small-6 el-col-medium-3 small-padding-bottom-small">';
-					$html .= '<img alt="SGS" src="' . get_stylesheet_directory_uri() . '/img/associations/logo-sgs-gray.png' . '"/>';
-				$html .= '</div>';
-				$html .= '<div class="logo el-col-small-6 el-col-medium-3 small-padding-bottom-small">';
-					$html .= '<img alt="Halal Certified" src="' . get_stylesheet_directory_uri() . '/img/associations/logo-halal-gray.png' . '"/>';
-				$html .= '</div>';
-				$html .= '<div class="logo el-col-small-6 el-col-medium-3 small-padding-bottom-small">';
-					$html .= '<img alt="NSW Food Authority" src="' . get_stylesheet_directory_uri() . '/img/associations/logo-nswfoodauthority-gray.png' . '"/>';
-				$html .= '</div>';
-				
-			$html .= '</div>';
-		$html .= '</div>';
-		
-		return $html;
-	}
-	
-	
 
 	
+
+
+	
+	
 	/**
-	 * Gets the HTML output for the footer CTA element
+	 * Displays the commitment program CTA
 	 * 
-	 * Settings pulled from the back of the customizer 
+	 * Displays the commitment program CTA as defined in the theme customizer. Used across all pages of the site
 	 */
-	public static function get_footer_cta(){
+	public static function el_display_commitment_program_cta(){
 		
-		$instance = self::getInstance();
-		$html = '';
-		
-		$el_footer_cta_enabled = get_theme_mod('el_footer_cta_enabled');
-		$el_footer_cta_background_image = get_theme_mod('el_footer_cta_background_image');
-		$el_footer_cta_featured_image = get_theme_mod('el_footer_cta_featured_image');
-		$el_footer_cta_title = get_theme_mod('el_footer_cta_title');
-		$el_footer_cta_subtitle = get_theme_mod('el_footer_cta_subtitle');
-		
-
-		if($el_footer_cta_enabled){
-			$style = '';
-			$style .= (!empty($el_header_cta_background_image)) ? 'background-image: url(' . $el_header_cta_background_image . '); ' : '';
-			
-			
-			$html .= '<section class="footer-hero el-row" style="' . $style . '">';
-				
-				$html .= '<div class="el-row inner small-padding-top-botom-medium medium-padding-top-bottom-large">';
-				
-					//Display badge
-					if(!empty($el_footer_cta_featured_image)){
-						$html .= '<div class="badge" style="background-image:url(' . $el_footer_cta_featured_image .');"></div>';
-					}
-				
-					//background image
-					if(!empty($el_footer_cta_background_image)){
-						$html .= '<div class="background-image" style="background-image:url(' . $el_footer_cta_background_image . ');"></div>';
-					}
-					//content
-					$html .= '<div class="content small-margin-top-bottom-large el-col-small-12">';
-							
-						if(!empty($el_footer_cta_title)){
-							$html .= '<h2 class="title">' . $el_footer_cta_title . '</h2>'; 
-						}
-						if(!empty($el_footer_cta_subtitle)){
-							$html .= '<p class="subtitle h4">' . $el_footer_cta_subtitle . '</p>';
-						}
-
-						//TODO: Retail shop hours here
-						$el_trading_hours_monday_friday = get_theme_mod('el_trading_hours_monday_friday');
-						$el_trading_hours_saturday = get_theme_mod('el_trading_hours_saturday');
-						$el_trading_hours_holidays = get_theme_mod('el_trading_hours_holidays');
-						
-						if(!empty($el_trading_hours_monday_friday)){
-							$html .= '<div>';
-							$html .= __('Monay - Friday: ', 'ycc') . $el_trading_hours_monday_friday;
-							$html .= '</div>';
-						}
-						if(!empty($el_trading_hours_saturday)){
-							$html .= '<div>';
-							$html .= __('Saturday: ', 'ycc') . $el_trading_hours_saturday;
-							$html .= '</div>';
-						}
-						if(!empty($el_trading_hours_holidays)){
-							$html .= '<div>';
-							$html .= __('Public Holidays / Sunday: ', 'ycc') . $el_trading_hours_holidays;
-							$html .= '</div>';
-						}
-
-					$html .= '</div>';
-				
-				$html .= '</div>';
-			$html .= '</section>';
-		}
-		
-		return $html;
-	}
-	
-	
-	/**
-	 * Displays the header CTA 
-	 * 
-	 * Displays either the default CTA set in the theme customizer or a customized version on
-	 * a page by page basis.
-	 */
-	public static function el_display_header_cta($object){
-		
-		
-		$instance = self::getInstance();
-		$html = '';
-		
-		
-		$post_types = array('post', 'page', 'products');
-		$display_custom_banner = false;
-		
-		//object is a post, not term or misc
-		if($object instanceof WP_Post){
-			
-			$post_type = get_post_type($object->ID);
-			
-			//on applicable post type
-			if(in_array($post_type, $post_types)){
-				
-				$el_header_cta_enabled = get_post_meta($object->ID, 'el_header_cta_enabled', true);
 					
-				//opted to override CTA
-				if($el_header_cta_enabled == 'yes'){
-					$display_custom_banner = true;
+		$instance = self::getInstance();
+		$html = '';
+
+		//Display customizer values
+		$el_commitment_program_cta_enabled = get_theme_mod('el_commitment_program_cta_enabled');
+		$el_commitment_program_cta_background_image = get_theme_mod('el_commitment_program_cta_background_image');
+		$el_commitment_program_cta_background_colour = get_theme_mod('el_commitment_program_cta_background_colour');
+		$el_commitment_program_cta_title = get_theme_mod('el_commitment_program_cta_title');
+		$el_commitment_program_cta_content = get_theme_mod('el_commitment_program_cta_content');
+		$el_commitment_program_cta_button_text = get_theme_mod('el_commitment_program_cta_button_text');
+		$el_commitment_program_cta_button_url = get_theme_mod('el_commitment_program_cta_button_url');
+		
+		if($el_commitment_program_cta_enabled){
+			
+			$html .= '<section class="commitment-program-cta el-row">';
+				
+				//background colour
+				if(!empty($el_commitment_program_cta_background_colour)){
+					$style = '';
+					$style .= (!empty($el_commitment_program_cta_background_colour)) ? 'background-color: ' . $el_commitment_program_cta_background_colour . '; ' : '';
+					$html .= '<div class="background-color" style="' . $style . '"></div>';
 				}
-			}
-			
-		}
-		
-		//overriden CTA page level
-		if($display_custom_banner == true){
-			
-			//customizer values
-			$el_header_cta_background_image = get_theme_mod('el_header_cta_background_image');
-			$el_header_cta_background_colour = get_theme_mod('el_header_cta_background_colour');	
-			
-			$el_header_cta_show = get_post_meta($object->ID, 'el_header_cta_show', true);
-			if(!empty($el_header_cta_show)){
-				$el_header_cta_show = json_decode($el_header_cta_show);
-			}
-			$el_header_cta_title = get_post_meta($object->ID, 'el_header_cta_title', true);
-			$el_header_cta_subtitle = get_post_meta($object->ID, 'el_header_cta_subtitle', true);
-			
-		
-			//if we have chosen not to show the CTA
-			if(is_array($el_header_cta_show) && (in_array('hide', $el_header_cta_show))){
-				return false;
-			}
-			
-		
-			$style = '';
-			$style .= (!empty($el_header_cta_background_image)) ? 'background-image: url(' . $el_header_cta_background_image . '); ' : '';
-			$style .= (!empty($el_header_cta_background_colour)) ? 'background-color: ' . $el_header_cta_background_colour . '; ' : '';
-			
-			$html .= '<section class="header-hero el-row" style="' . $style . '">';
-				$html .= '<div class="el-row inner-small small-padding-top-xx-large medium-padding-top-x-large">';
 				
-					if(!empty($el_header_cta_title)){
-						$html .= '<h2 class="title el-col-small-12 small-align-center">' . $el_header_cta_title . '</h2>'; 
+				//background image
+				if(!empty($el_commitment_program_cta_background_image)){
+					$style = '';
+					$style .= (!empty($el_commitment_program_cta_background_image)) ? 'background-image: url(' . $el_commitment_program_cta_background_image . '); ' : '';
+					$html .= '<div class="background-image" style="' . $style . '"></div>';
+				}
+
+				$html .= '<div class="content-wrap el-row inner-small small-padding-top-bottom-medium medium-padding-top-bottom-large">';
+					if(!empty($el_commitment_program_cta_title)){
+						$html .= '<h2 class="title el-col-small-12 small-align-center">' . $el_commitment_program_cta_title . '</h2>'; 
 					}
-					if(!empty($el_header_cta_subtitle)){
-						$html .= '<p class="subtitle el-col-small-12 small-align-center">' . $el_header_cta_subtitle . '</p>';
+					if(!empty($el_commitment_program_cta_content)){
+						$html .= '<p class="content el-col-small-12 small-align-center">' . $el_commitment_program_cta_content . '</p>';
 					}
+					if(!empty($el_commitment_program_cta_button_text) && !empty($el_commitment_program_cta_button_url)){
+						$html .= '<div class="small-align-center">';
+							$html .= '<a class="button primary-button" href="' . $el_commitment_program_cta_button_url . '">' . $el_commitment_program_cta_button_text . '</a>';
+						$html .= '</div>';
+					}
+					
+					
 				$html .= '</div>';
 			$html .= '</section>';
-			
-			
 		}
-		//Display customizer default values
-		else{
-			//customizer values
-			$el_header_cta_enabled = get_theme_mod('el_header_cta_enabled');
-			$el_header_cta_background_image = get_theme_mod('el_header_cta_background_image');
-			$el_header_cta_background_colour = get_theme_mod('el_header_cta_background_colour');
-			$el_header_cta_title = get_theme_mod('el_header_cta_title');
-			$el_header_cta_subtitle = get_theme_mod('el_header_cta_subtitle');
-			
-			if($el_header_cta_enabled){
-				
-				
-				
-				
-				$html .= '<section class="header-hero header-hero-customizer el-row">';
-					
-					//background colour
-					if(!empty($el_header_cta_background_colour)){
-						$style = '';
-						$style .= (!empty($el_header_cta_background_colour)) ? 'background-color: ' . $el_header_cta_background_colour . '; ' : '';
-						$html .= '<div class="background-color" style="' . $style . '"></div>';
-					}
-					
-					//background image
-					if(!empty($el_header_cta_background_image)){
-						$style = '';
-						$style .= (!empty($el_header_cta_background_image)) ? 'background-image: url(' . $el_header_cta_background_image . '); ' : '';
-						$html .= '<div class="background-image" style="' . $style . '"></div>';
-					}
-
-					$html .= '<div class="content el-row inner-small small-padding-top-xx-large medium-padding-top-x-large">';
-						if(!empty($el_header_cta_title)){
-							$html .= '<h2 class="title el-col-small-12 small-align-center">' . $el_header_cta_title . '</h2>'; 
-						}
-						if(!empty($el_header_cta_subtitle)){
-							$html .= '<p class="subtitle el-col-small-12 small-align-center">' . $el_header_cta_subtitle . '</p>';
-						}
-					$html .= '</div>';
-				$html .= '</section>';
-			}
-		}
-		
-		
-		
-		
-		
-		
-
-		
 		
 		echo $html;
 		
+		
 	}
-	
+
 	/**
-	 * Displays a logo in the footer, setting pulled from the theme customiser
+	 * Displays the appointment banner as outlined in the theme customizer, used above the footer
 	 */
-	public static function el_display_footer_logo(){
-			
+	public static function el_display_appointment_cta(){
+
+		
+		
 		$instance = self::getInstance();
-		
 		$html = '';
+
+		//Display customizer values
+		$el_appointment_cta_enabled = get_theme_mod('el_appointment_cta_enabled');
+		$el_appointment_cta_background_image = get_theme_mod('el_appointment_cta_background_image');
+		$el_appointment_cta_background_colour = get_theme_mod('el_appointment_cta_background_colour');
+		$el_appointment_cta_title = get_theme_mod('el_appointment_cta_title');
+		$el_appointment_cta_content = get_theme_mod('el_appointment_cta_content');
+		$el_appointment_cta_button_text = get_theme_mod('el_appointment_cta_button_text');
+		$el_appointment_cta_button_url = get_theme_mod('el_appointment_cta_button_url');
 		
-		$url = get_theme_mod('el_footer_logo');
-		if($url){
-			$html .= '<img src="' . $url . '" class="theme-logo"/>';
+		
+		if($el_appointment_cta_enabled){
+			
+			$html .= '<section class="appointment-cta el-row">';
+				
+				//background colour
+				if(!empty($el_appointment_cta_background_colour)){
+					$style = '';
+					$style .= (!empty($el_appointment_cta_background_colour)) ? 'background-color: ' . $el_appointment_cta_background_colour . '; ' : '';
+					$html .= '<div class="background-color" style="' . $style . '"></div>';
+				}
+				
+				//background image
+				if(!empty($el_appointment_cta_background_image)){
+					$style = '';
+					$style .= (!empty($el_appointment_cta_background_image)) ? 'background-image: url(' . $el_appointment_cta_background_image . '); ' : '';
+					$html .= '<div class="background-image" style="' . $style . '"></div>';
+				}
+
+				$html .= '<div class="content-wrap el-row inner-small small-padding-top-bottom-medium medium-padding-top-bottom-large">';
+					if(!empty($el_appointment_cta_title)){
+						$html .= '<h2 class="title el-col-small-12 small-align-center">' . $el_appointment_cta_title . '</h2>'; 
+					}
+					if(!empty($el_appointment_cta_content)){
+						$html .= '<p class="content el-col-small-12 small-align-center">' . $el_appointment_cta_content . '</p>';
+					}
+
+					if(!empty($el_appointment_cta_button_text) && !empty($el_appointment_cta_button_url)){
+						$html .= '<div class="small-align-center">';
+							$html .= '<a class="button featured-button" href="' . $el_appointment_cta_button_url . '">' . $el_appointment_cta_button_text . '</a>';
+						$html .= '</div>';
+					}
+					
+					
+				$html .= '</div>';
+			$html .= '</section>';
 		}
 		
 		echo $html;
+		
+		
 	}
+
+
+
 	
 	/**
 	 * Hooked function to display footer widgets
@@ -1755,686 +1514,10 @@
  $theme_base = theme_base::getInstance();
  
  
- 
- /**
- * File Download or link widget
- * 
- * used to let users click on a widget and download a selected resource. Or visit a selected page on click
- */
- 
- class el_download_widget extends WP_Widget{
- 	
-	public function __construct(){
-			
-		$args = array(
-			'description'	=> 'Creates a simple download widget, useful for linking users to a single PDF or file'
-		);
-		
-		parent::__construct(
-			'el_download_widget', esc_html__('Simple Download / URL Widget', 'ycc'), $args
-		);
-		
-	}
-
-	
-	/**
-	 * Visual output frontend
-	 */
-	public function widget($args, $instance){
-		
-		$title = isset($instance['title']) ? $instance['title'] : '';
-		$resource_id = isset($instance['resource_id']) ? $instance['resource_id'] : '';
-		$background_id = isset($instance['background_id']) ? $instance['background_id'] : '';
-		$background_colour = isset($instance['background_colour']) ? $instance['background_colour'] : '';
-		$text_colour = isset($instance['text_colour']) ? $instance['text_colour'] : '';
-		$link_url = isset($instance['link_url']) ? $instance['link_url'] : ''; 
-		
-		$html = '';
-		
-		$html .= $args['before_widget'];
-		
-		
-			$style = '';
-			$style .= !empty($background_colour) ? 'background-color: ' . $background_colour . '; ' : '';
-			$style .= !empty($text_colour) ? 'color: ' . $text_colour . '; ' : '';
-			
-			$html .= '<div class="widget-wrap" style="' . $style . '">';
-			
-				//widget background
-				if(!empty($background_id)){
-					$background_url = wp_get_attachment_image_src($background_id, 'medium', false)[0];
-					$html .= '<div class="background-image" style="background-image:url(' . $background_url . ');"></div>';
-;				}
-			
-				//title if supplied
-				if(isset($instance['title'])){
-					$html .= $args['before_title'];
-						$html .= $instance['title'];
-					$html .= $args['after_title'];	
-				}
-				
-				//main content
-				$html .= '<div class="widget-content">';
-					//Link to a resource
-					if(!empty($resource_id)){
-						$resource_url = get_permalink($resource_id);
-						
-						$style = '';
-						$style .= !empty($text_colour) ? 'border-color: ' . $text_colour . '; ' : '';
-						$html .= '<a download class="download" style="' . $style . '" href="' . $resource_url . '"><i class="fa fa-angle-down" aria-hidden="true"></i></a>';
-					}
-					//Link to a URL
-					if(!empty($link_url)){
-						$style = '';
-						$style .= !empty($text_colour) ? 'border-color: ' . $text_colour . '; ' : '';
-						$html .= '<a class="download" style="' . $style . '" href="' . $link_url . '"><i class="fa fa-angle-right" aria-hidden="true"></i></a>';
-					}
-				$html .= '</div>';
-			
-			$html .= '</div>';
-		
-		$html .= $args['after_widget'];
-		
-		
-		echo $html;
-		
-		
-	}
-	
-	/**
-	 * Form output on admin
-	 */
-	public function form($instance){
-		
-		//enqueue media scripts
-		wp_enqueue_media();	
-
-		$title = isset($instance['title']) ? $instance['title'] : '';
-		$background_id = isset($instance['background_id']) ? $instance['background_id'] : '';
-		$resource_id = isset($instance['resource_id']) ? $instance['resource_id'] : '';
-		$background_colour = isset($instance['background_colour']) ? $instance['background_colour'] : '';
-		$text_colour = isset($instance['text_colour']) ? $instance['text_colour'] : '';
-		$link_url = isset($instance['link_url']) ? $instance['link_url'] : '';
-		
-		
-		$html = '';
-		
-		//TODO: Come back and adjust this to collect right pallets
-		$html .= '<script id="test" type="text/javascript">';
-		$html .= 'jQuery(document).ready(function($){
-							
-				//on update, set colours back up again
-				$(document).on("widget-updated", function (event, $widget) {
-					console.log("Updasted colour");
-					$(".colorpicker-field").wpColorPicker({
-						hide: true
-					});
-				});
-
-			  });';
-		$html .= '</script>';
-		
-		
-			
-		
-		
-		$html .= '<p>';
-			$html .= '<label for="' . $this->get_field_id('title') . '">' . __('Title', 'ycc') .'</label>';
-			$html .= '<input class="widefat" type="text" name="' . $this->get_field_name('title') . '" id="' . $this->get_field_id('title') . '" value="' . $title .'"/>';
-		$html .= '</p>';
-		
-		//Resources Selection
-		$field_name = $this->get_field_name('resource_id');
-		$field_id = $this->get_field_id('resource_id');
-		$html .= '<p>';
-			$html .= '<div class="image-upload-container">';
-				$html .= '<label for="' . $field_id . '">' . __('If you want this to link to a resource, select it below <br/>','ycc') . '</label>';
-				$html .= '<input type="button" value="Select Resource" class="widget-upload image-upload-button" data-multiple-upload="false" data-file-type="image" data-field-name="' . $field_name .'"/>';
-				$html .= '<div class="image-container cf">';
-				
-				if(!empty($resource_id)){
-					$image_url = wp_get_attachment_image_src($resource_id, 'thumbnail', false)[0];
-					
-					$html .= '<div class="image">';
-					$html .=	'<input type="hidden" id="' . $field_id . '" name="' . $field_name . '" value="' .  $resource_id . '"/>';
-					$html .=	'<div class="image-preview" style="background-image:url(' . $image_url . ');"></div>';
-					$html .=	'<div class="image-controls cf">';
-					$html .=		'<div class="control remove_image">Remove Resource<i class="fa fa-minus"></i></div>';	
-					$html .=	'</div>';
-					$html .= '</div>';
-				}
-				$html .= '</div>';
-					
-			$html .= '</div>';
-		$html .= '</p>';
-		
-		//Link URL
-		$html .= '<p>';
-			$html .= '<label for="' . $this->get_field_id('link_url') . '">' . __('Link URL', 'ycc') .'</label></br>';
-			$html .= '<span>If you want this widget instead to link to a URL, enter the full URL here </span>';
-			$html .= '<input class="widefat" type="url" name="' . $this->get_field_name('link_url') . '" id="' . $this->get_field_id('link_url') . '" value="' . $link_url .'"/>';
-		$html .= '</p>';
-		
-		//Background Image Selection
-		$field_name = $this->get_field_name('background_id');
-		$field_id = $this->get_field_id('background_id');
-		
-		$html .= '<p>';
-			$html .= '<div class="image-upload-container">';
-				$html .= '<label for="' . $field_id . '">' . __('Select the image that will be used as the background image <br/>','ycc') . '</label>';
-				$html .= '<input type="button" value="Select Resource" class="widget-upload image-upload-button" data-multiple-upload="false" data-file-type="image" data-field-name="' . $field_name .'"/>';
-				$html .= '<div class="image-container cf">';
-				
-				if(!empty($background_id)){
-					$image_url = wp_get_attachment_image_src($background_id, 'thumbnail', false)[0];
-					
-					$html .= '<div class="image">';
-					$html .=	'<input type="hidden" id="' . $field_id . '" name="' . $field_name . '" value="' .  $background_id . '"/>';
-					$html .=	'<div class="image-preview" style="background-image:url(' . $image_url . ');"></div>';
-					$html .=	'<div class="image-controls cf">';
-					$html .=		'<div class="control remove_image">Remove Resource<i class="fa fa-minus"></i></div>';	
-					$html .=	'</div>';
-					$html .= '</div>';
-				}
-				$html .= '</div>';
-					
-			$html .= '</div>';
-		$html .= '</p>';
-		
-		
-		
-		
-		//Background colour
-		$html .= '<p>';
-			$html .= '<label for="' . $this->get_field_id('background_colour') . '">' . __('Background Colour', 'ycc') .'</label></br>';
-			$html .= '<input class="widefat colorpicker-field" type="text" name="' . $this->get_field_name('background_colour') . '" id="' . $this->get_field_id('background_colour') . '" value="' . $background_colour .'"/>';
-		$html .= '</p>';
-
-		//Text Colour
-		$html .= '<p>';
-			$html .= '<label for="' . $this->get_field_id('text_colour') . '">' . __('Text Colour', 'ycc') .'</label></br>';
-			$html .= '<input class="widefat colorpicker-field" type="text" name="' . $this->get_field_name('text_colour') . '" id="' . $this->get_field_id('text_colour') . '" value="' . $text_colour .'"/>';
-		$html .= '</p>';
-	
-	
-		
-		echo $html;
-	}
-	
-	
-	/**
-	 * Save callback
-	 */
-	public function update($new_instance, $old_instance){
-		
-		$instance = array();
-		
-		$instance['title'] = isset($new_instance['title']) ? sanitize_text_field($new_instance['title']) : '';
-		$instance['resource_id'] = isset($new_instance['resource_id']) ? sanitize_text_field($new_instance['resource_id']) : '';
-		$instance['background_id'] = isset($new_instance['background_id']) ? sanitize_text_field($new_instance['background_id']) : '';
-		$instance['background_colour'] = isset($new_instance['background_colour']) ? sanitize_text_field($new_instance['background_colour']) : '';
-		$instance['text_colour'] = isset($new_instance['text_colour']) ? sanitize_text_field($new_instance['text_colour']) : '';
-		$instance['link_url'] = isset($new_instance['link_url']) ? sanitize_text_field($new_instance['link_url']) : '';
-	
-	
-		return $instance;
-		
-	}
-	
- }
-
-
-
- //TODO: LOOK INTO THIS FURTHER, CANT USE TINYMCE EDITOR HERE FOR SOME REASON
- /**
- * Basic Wysiwyg editor in a widget
- * 
- * Used to provide an editor widget to be used in the sidebar
- */
- 
- class el_editor_widget extends WP_Widget{
- 	
-	public function __construct(){
-			
-		$args = array(
-			'description'	=> 'Creates a simple editor widget to let you add HTML / Content into widget areas'
-		);
-		
-		parent::__construct(
-			'el_editor_widget', esc_html__('Basic WYSIWYG Widget', 'ycc'), $args
-		);
-		
-	}
-
-	
-	/**
-	 * Visual output frontend
-	 */
-	public function widget($args, $instance){
-		
-		$title = isset($instance['title']) ? $instance['title'] : '';
-		$editor = isset($instance['editor']) ? $instance['editor'] : '';
-		
-		$html = '';
-		
-		$html .= $args['before_widget'];
-				
-			$html .= '<div class="widget-wrap el-col-small-12 small-padding-top-bottom-small">';
-			
-				//title if supplied
-				if(isset($instance['title'])){
-					$html .= $args['before_title'];
-						$html .= $title;
-					$html .= $args['after_title'];	
-				}
-		
-				//main content
-				$html .= '<div class="widget-content ">';
-					$html .= apply_filters('the_content', $editor);
-				$html .= '</div>';
-					
-			
-			$html .= '</div>';
-		
-		$html .= $args['after_widget'];
-		
-		
-		echo $html;
-		
-		
-	}
-	
-	/**
-	 * Form output on admin
-	 * 
-	 * TODO: Come back and clean this up, experimental
-	 * @link https://codex.wordpress.org/TinyMCE
-	 * @link http://wordpress.stackexchange.com/questions/82670/why-cant-wp-editor-be-used-in-a-custom-widget
-	 * @link http://wordpress.stackexchange.com/questions/227165/wp-editor-in-widget-breaks-after-save-no-buttons-and-visual-tab-broken
-	 */
-	public function form($instance){
-		
-		//enqueue media scripts
-		wp_enqueue_media();	
-
-		$title = isset($instance['title']) ? $instance['title'] : '';
-		$editor = isset($instance['editor']) ? $instance['editor'] : '';
-		
-		$html = '';
-		
-		
-		$html .= '<p>';
-			$html .= '<label for="' . $this->get_field_id('title') . '">' . __('Title', 'ycc') .'</label>';
-			$html .= '<input class="widefat" type="text" name="' . $this->get_field_name('title') . '" id="' . $this->get_field_id('title') . '" value="' . $title .'"/>';
-		$html .= '</p>';
-		
-
-		//Editor
-		$html .= '<div>';
-		
-			//add a trigger to the TinyMCE element to ensure editor is saved when editing terms
-			//http://wordpress.stackexchange.com/questions/39594/wp-editor-textarea-value-not-updating
-			
-			
-			$widget_id = $this->id;
-			
-			//Name of this widget instance
-			$random = rand( 0, 999 );
-			$id = $this->get_field_id('editor_' . $random);
-			$name = $this->get_field_name('editor_' . $random);
-			
-			//Handle the re-init process for tiny MCE after save,
-			//Handle saving of tiny MCE field when about to save (else the value never gets updated)
-			$html .= '<script type="text/javascript">';
-			$html .= 'jQuery(document).ready(function($){
-							
-						options = {
-							selector: "textarea[id*=' . $id .']",
-							height: 400,
-            				theme: "modern",
-            				plugins: "tabfocus,paste,media,wordpress,wpeditimage,wpgallery,wplink,wpdialogs",
-            				toolbar1: "bold,italic,strikethrough,bullist,numlist,blockquote,hr,alignleft,aligncenter,alignright,link,unlink,wp_more,spellchecker,wp_fullscreen,wp_adv",
-            				toolbar2: "formatselect,underline,alignjustify,forecolor,pastetext,removeformat,charmap,outdent,indent,undo,redo,wp_help"
-						};
-						
-						//tinyMCE.init(options);
-						
-						//console.log("#' . $id . '");
-						
-						//save when hovering over the submit button
-						$("#widget-' . $widget_id . '-savewidget").on("hover", function(){
-							tinyMCE.triggerSave();
-							console.log("Hover save");
-						});
-						
-						//on update, set the widget area back up again
-						$(document).on("widget-updated", function (event, $widget) {
-							console.log("Updasted widget");
-							tinyMCE.remove();
-							tinyMCE.init(options);
-						});
-
-					  });';
-			$html .= '</script>';
-			
-
-		
-			$html .= '<label for="' . $id  . '">' . __('Content', 'ycc') . '</label>';
-			$html .= '<input type="hidden" id="' . $this->get_field_id('editor_number') .'" name="' . $this->get_field_name('editor_number'). '" value="' . $random .'" />'; 
-			ob_start();
-			$editor_args = array(
-				'textarea_name'		=> $name,
-				'textarea_rows'		=> 10,
-				'teeny'				=> true
-			);
-			
-			wp_editor($editor, $id, $editor_args);
-			$markup = ob_get_clean();
-			
-			$html .= $markup;
-		
-		$html .= '</div>';
-		
-		echo $html;
-	}
-	
-	/**
-	 * Save callback
-	 */
-	public function update($new_instance, $old_instance){
-		
-		$instance = array();
-			
-		$instance['title'] = isset($new_instance['title']) ? sanitize_text_field($new_instance['title']) : '';
-		$instance['editor_number'] = isset($new_instance['editor_number']) ? $new_instance['editor_number'] : '';
-		$field_name = 'editor_' . $instance['editor_number'];
-		$instance['editor'] = isset($new_instance[$field_name]) ? $new_instance[$field_name] : '';
-		
-
-		
-		return $instance;
-		
-	}
-	
- }
 
 
 
 
-
-
-
- /**
-  * Contact Us Widget
-  * 
-  * Provides an interactive widget to show to the user phone number, fax, email, address and trading hours
-  * pulled in from the theme customizer
-  */
- class el_contact_us_widget extends WP_widget{
- 	
-	 /**
-	 * Constrcutor 
-	 */
-	public function __construct(){
-		
-		$args = array(
-			'description'	=> 'Displays a contact widget that shows various contact elements such as number, fax, email, address etc'
-		);
-		
-		parent::__construct(
-			'el_contact_us_widget', esc_html__('Contact Widget', 'ycc'), $args
-		);
-		
-	}
-
-	
-	
-	/**
-	 * Visual output frontend
-	 */
-	public function widget($args, $instance){
-		
-		$eq_faq = el_faq::getInstance();
-		
-		$html = '';
-		
-		$html .= $args['before_widget'];
-		
-			$html .= '<div class="widget-wrap">';
-				
-				$title = isset($instance['title']) ? $instance['title'] : '';
-				$contact_options = isset($instance['contact_options']) ? $instance['contact_options'] : '';
-				if(!empty($contact_options)){
-					$contact_options = json_decode($contact_options);
-				}
-				
-				//title if supplied
-				if(isset($instance['title'])){
-					$html .= $args['before_title'];
-						$html .= $title;
-					$html .= $args['after_title'];	
-				}
-				
-				//Customizer settings
-				$el_phone = get_theme_mod('el_phone');
-				$el_fax = get_theme_mod('el_fax');
-				$el_email = get_theme_mod('el_email');
-				$el_address = get_theme_mod('el_address');
-				
-				
-				//main content
-				$html .= '<div class="widget-content">';
-					$html .= '<div class="widget-wrap">';	
-				
-					//Display Phone
-					if(is_array($contact_options) && in_array('phone', $contact_options)){
-						$html .= '<div class="element el-row nested phone small-margin-bottom-medium">';
-							$html .= '<div class="el-col-small-6 el-col-medium-3 el-col-large-2 image">';
-								$html .= '<img src="' . get_stylesheet_directory_uri() . '/img/icon-phone.png"/>';
-							$html .= '</div>';
-							
-							$html .= '<div class="el-col-small-6 el-col-medium-9 el-col-large-10 content">';
-								$html .= '<h4 class="small-margin-bottom-none">' . __('24 Hour Phone', 'ycc') . '</h4>';
-								$html .= '<a class="h4 black" href="tel:' . trim($el_phone) . '">' . $el_phone . '</a>';
-								
-							$html .= '</div>';	
-						$html .= '</div>';
-					}
-					//Display Fax
-					if(is_array($contact_options) && in_array('fax', $contact_options)){
-						$html .= '<div class="element el-row nested fax small-margin-bottom-medium">';
-							$html .= '<div class="el-col-small-6 el-col-medium-3 el-col-large-2 image">';
-								$html .= '<img src="' . get_stylesheet_directory_uri() . '/img/icon-fax.png"/>';
-							$html .= '</div>';
-							
-							$html .= '<div class="el-col-small-6 el-col-medium-9 el-col-large-10 content">';
-								$html .= '<h4 class="small-margin-bottom-none">' . __('24 Hour Fax', 'ycc') . '</h4>';
-								$html .= '<div class="h4 black">' . $el_fax . '</div>';
-								
-							$html .= '</div>';	
-						$html .= '</div>';
-					}
-					//Email
-					if(is_array($contact_options) && in_array('email', $contact_options)){
-						$html .= '<div class="element el-row nested email small-margin-bottom-medium">';
-							$html .= '<div class="el-col-small-6 el-col-medium-3 el-col-large-2 image">';
-								$html .= '<img src="' . get_stylesheet_directory_uri() . '/img/icon-mail.png"/>';
-							$html .= '</div>';
-							
-							$html .= '<div class="el-col-small-6 el-col-medium-9 el-col-large-10 content">';
-								$html .= '<h4 class="small-margin-bottom-none">' . __('Email', 'ycc') . '</h4>';
-								$html .= '<a class="black" href="mailto:' . $el_email . '">' . $el_email . '</a>';
-								
-							$html .= '</div>';	
-						$html .= '</div>';
-					}
-					//Address
-					if(is_array($contact_options) && in_array('address', $contact_options)){
-						$html .= '<div class="element el-row nested address small-margin-bottom-medium">';
-							$html .= '<div class="el-col-small-6 el-col-medium-3 el-col-large-2 image">';
-								$html .= '<img src="' . get_stylesheet_directory_uri() . '/img/icon-location.png"/>';
-							$html .= '</div>';
-							
-							$html .= '<div class="el-col-small-6 el-col-medium-9 el-col-large-10 content">';
-								$html .= '<h4 class="small-margin-bottom-none">' . __('Address', 'ycc') . '</h4>';
-								$html .= '<div>' . $el_address . '</div>';
-								
-							$html .= '</div>';	
-						$html .= '</div>';
-					}
-					//Opening Hours
-					if(is_array($contact_options) && in_array('hours', $contact_options)){
-						$html .= '<div class="element el-row nested hours small-margin-bottom-medium">';
-							$html .= '<div class="el-col-small-6 el-col-medium-3 el-col-large-2 image">';
-								$html .= '<img src="' . get_stylesheet_directory_uri() . '/img/icon-clock.png"/>';
-							$html .= '</div>';
-							
-							$html .= '<div class="el-col-small-6 el-col-medium-9 el-col-large-10 content">';
-								$html .= '<h4 class="small-margin-bottom-none">' . __('Trading Hours', 'ycc') . '</h4>';
-								
-								$el_trading_hours_monday_friday = get_theme_mod('el_trading_hours_monday_friday');
-								$el_trading_hours_saturday = get_theme_mod('el_trading_hours_saturday');
-								$el_trading_hours_holidays = get_theme_mod('el_trading_hours_holidays');
-								
-								if(!empty($el_trading_hours_monday_friday)){
-									$html .= '<div>';
-									$html .= __('Monay - Friday: ', 'ycc') . $el_trading_hours_monday_friday;
-									$html .= '</div>';
-								}
-								if(!empty($el_trading_hours_saturday)){
-									$html .= '<div>';
-									$html .= __('Saturday: ', 'ycc') . $el_trading_hours_saturday;
-									$html .= '</div>';
-								}
-								if(!empty($el_trading_hours_holidays)){
-									$html .= '<div>';
-									$html .= __('Public Holidays / Sunday: ', 'ycc') . $el_trading_hours_holidays;
-									$html .= '</div>';
-								}
-
-							$html .= '</div>';	
-						$html .= '</div>';
-					}
-					
-				
-					$html .= '</div>';
-				$html .= '</div>';
-				
-			$html .= '</div>';
-			
-		$html .= $args['after_widget'];
-		
-		
-		echo $html;
-		
-		
-	}
-	
-	/**
-	 * Form output on admin
-	 */
-	public function form($instance){
-			
-		$title = isset($instance['title']) ? $instance['title'] : '';
-		$contact_options = isset($instance['contact_options']) ? $instance['contact_options'] : '';
-		
-		if(!empty($contact_options)){
-			$contact_options = json_decode($contact_options);
-		}
-		
-		
-		$html = '';
-		$html .= '<p>';
-			$html .= '<label for="' . $this->get_field_id('title') . '">' . __('Title', 'ycc') .'</label>';
-			$html .= '<input class="widefat" type="text" name="' . $this->get_field_name('title') . '" id="' . $this->get_field_id('title') . '" value="' . $title .'"/>';
-		$html .= '</p>';
-		
-		//Select which elemnents to displauyw
-		$html .= '<p>';
-			$html .= '<label>' . __('Which contact elements do you want displayed?', 'ycc') .'</label><br/>';
-			
-			//Various contact options
-			
-			//PHONE
-			$html .= '<p>';
-				if(is_array($contact_options) && in_array('phone',$contact_options)){				
-					$html .= '<input checked type="checkbox" id="' . $this->get_field_id('contact_options') .'-phone" name="' . $this->get_field_name('contact_options[]') . '" value="phone"/>';
-				}else{
-					$html .= '<input type="checkbox" id="' . $this->get_field_id('contact_options') .'-phone" name="' . $this->get_field_name('contact_options[]') . '" value="phone"/>';
-				}
-				$html .= '<label for="' . $this->get_field_id('contact_options') . '-phone">Show Phone</label>';	
-			$html .= '</p>';
-				
-			//FAX
-			$html .= '<p>';
-				if(is_array($contact_options) && in_array('fax',$contact_options)){				
-					$html .= '<input checked type="checkbox" id="' . $this->get_field_id('contact_options') .'-fax" name="' . $this->get_field_name('contact_options[]') . '" value="fax"/>';
-				}else{
-					$html .= '<input type="checkbox" id="' . $this->get_field_id('contact_options') .'-fax" name="' . $this->get_field_name('contact_options[]') . '" value="fax"/>';
-				}
-				$html .= '<label for="' . $this->get_field_id('contact_options') . '-fax">Show Fax</label>';		
-			$html .= '</p>';
-			
-			//Email
-			$html .= '<p>';
-				if(is_array($contact_options) && in_array('email',$contact_options)){				
-					$html .= '<input checked type="checkbox" id="' . $this->get_field_id('contact_options') .'-email" name="' . $this->get_field_name('contact_options[]') . '" value="email"/>';
-				}else{
-					$html .= '<input type="checkbox" id="' . $this->get_field_id('contact_options') .'-email" name="' . $this->get_field_name('contact_options[]') . '" value="email"/>';
-				}
-				$html .= '<label for="' . $this->get_field_id('contact_options') . '-email">Show Email</label>';		
-			$html .= '</p>';
-				
-			//Address
-			$html .= '<p>';
-				if(is_array($contact_options) && in_array('address',$contact_options)){				
-					$html .= '<input checked type="checkbox" id="' . $this->get_field_id('contact_options') .'-address" name="' . $this->get_field_name('contact_options[]') . '" value="address"/>';
-				}else{
-					$html .= '<input type="checkbox" id="' . $this->get_field_id('contact_options') .'-address" name="' . $this->get_field_name('contact_options[]') . '" value="address"/>';
-				}
-				$html .= '<label for="' . $this->get_field_id('contact_options') . '-address">Show Address</label>';		
-			$html .= '</p>';
-			
-			//Opening Hours
-			$html .= '<p>';
-				if(is_array($contact_options) && in_array('hours',$contact_options)){				
-					$html .= '<input checked type="checkbox" id="' . $this->get_field_id('contact_options') .'-hours" name="' . $this->get_field_name('contact_options[]') . '" value="hours"/>';
-				}else{
-					$html .= '<input type="checkbox" id="' . $this->get_field_id('contact_options') .'-hours" name="' . $this->get_field_name('contact_options[]') . '" value="hours"/>';
-				}
-				$html .= '<label for="' . $this->get_field_id('contact_options') . '-hours">Show Opening Hours</label>';		
-			$html .= '</p>';
-			
-		$html .= '</p>';
-		
-		
-		echo $html;
-	}
-	
-	/**
-	 * Save callback
-	 */
-	public function update($new_instance, $old_instance){
-		
-		$instance = array();
-		
-		$instance['title'] = isset($new_instance['title']) ? sanitize_text_field($new_instance['title']) : '';
-		
-		if(isset($new_instance['contact_options'])){
-			$values = json_encode($new_instance['contact_options']);
-		}else{
-			$values = '';
-		}
-		$instance['contact_options'] = $values;
-	
-		
-		return $instance;
-		
-	}
-	
- }
- 
- 
  
  
  
